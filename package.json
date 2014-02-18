@@ -1,0 +1,17 @@
+{
+    "name": "zonegrid",
+    "description": "Scale games by splitting worlds into zones.",
+    "homepage": "https://github.com/jorgezaccaro/zonegrid#zonegrid",
+    "author": {
+        "name": "Jorge Zaccaro",
+        "email": "jorgezaccaro@gmail.com",
+        "url": "https://github.com/jorgezaccaro"
+    },
+    "version": "0.0.1",
+    "license": "MIT",
+    "dependencies": {
+        "eventerface": ">= 0.0.5"
+    },
+    "keywords": ["zones", "grids", "scalability", "games", "handover"],
+    "main": "zonegrid.js"
+}
