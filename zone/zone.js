@@ -1,6 +1,6 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
-    EventEmitter = require('events').EventEmitter;
+    zoneEvents = require('./events');
 
 /** MODULE INTERFACE
  *@method {function} create - 
@@ -18,8 +18,11 @@ module.exports = {
 function create(properties) {
     var zone = Object.create({}),
         localNamespace = eventerface.create(),
-        zoneEvents = new localNamespace.emitter(),
-        zoneProperties = defineZoneProperties(properties, zoneEvents);
+        emitter = new localNamespace.emitter(),
+        zoneProperties = defineZoneProperties(properties, emitter);
+
+    // Watch and route events on changes to zone properties
+    zoneEvents.watchProperties(zone, localNamespace.emitter());
 
     Object.defineProperties(zone, zoneProperties);
 
@@ -27,7 +30,6 @@ function create(properties) {
 }
 
 function defineZoneProperties(properties, emitter) {
-    var message = 'closure';
     var properties = {
         // ID of the zone
         id: {

@@ -27,16 +27,20 @@ module.exports = {
  * @returns {object} newZone - The created zone object
  */
 function createZone(properties) {
-    var newZone;
+    var defaultProperties = defaults.zoneProperties(), 
+        newZone;
 
     if (typeof properties !== 'object') {
-        properties = defaults.zoneProperties();
+        properties = defaultProperties;
     } 
     else {
     // Validate parameters
 
     }
 
+    // Create a global namespace for event-based communication between the zone modules
+    eventerface.create('zone_' + properties.id);
+    // Create the zone
     newZone = zone.create(properties);
 
     return newZone;
