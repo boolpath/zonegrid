@@ -18,30 +18,39 @@ module.exports = {
 function create(properties) {
     var zone,
         zoneEvents = new EventEmitter(),
-        zoneProperties = defineZoneProperties(zoneEvents);
+        zoneProperties = defineZoneProperties(properties, zoneEvents);
 
     zone = Object.create({}, zoneProperties);
-    zone.size.x = properties.size.x;
-    zone.size.y = properties.size.y;
 
     return zone;
 }
 
-function defineZoneProperties(zoneEvents) {
+function defineZoneProperties(properties, emitter) {
     var message = 'closure';
     var properties = {
         // Size of the zone
         size: {
             value: Object.create({}, {
-                x: sizeGetterSetter('x', zoneEvents),
-                y: sizeGetterSetter('y', zoneEvents),
-                z: sizeGetterSetter('z', zoneEvents)
+                x: sizeGetSet('x', properties.size.x, emitter),
+                y: sizeGetSet('y', properties.size.y, emitter),
+                z: sizeGetSet('z', properties.size.z, emitter)
             })
         },
+        visibility: {
+            value: Object.create({}, {
+                horizontal: visibilityGetSet('horizontal', properties.visibility.horizontal, emitter),
+                vertical: visibilityGetSet('vertical', properties.visibility.vertical, emitter)
+            })
+        },
+        handover: handoverGetSet(properties.handover, emitter),
         margins: {
             value: Object.create({}, {
                 scope: {
-                    
+                    value: Object.create({}, {
+                        x: createMargin(),
+                        y: createMargin(),
+                        z: createMargin()
+                    })
                 },
                 handover: {
 
@@ -53,17 +62,66 @@ function defineZoneProperties(zoneEvents) {
     return properties;
 }
 
-function sizeGetterSetter(coordinate, emitter) {
+/*----------------------------------------------------------------------------*/
+
+function sizeGetSet(coordinate, value, emitter) {
+    var _value = value;
     return {
         get: function () {
-            return this._value;
+            return _value;
         },
         set: function (value) {
-            this._value = value;
+            _value = value;
             emitter.emit('sizeChange', {
                 coordinate: coordinate,
-                value: value
+                value: _value
             });
         }
+    }
+}
+
+function handoverGetSet(value, emitter) {
+    var _value = value;
+    return {
+        get: function () {
+            return _value;
+        },
+        set: function (value) {
+            _value = value;
+            emitter.emit('handoverChange', {
+                value: _value
+            });
+        }
+    }
+}
+
+function visibilityGetSet(type, value, eventEmitter) {
+    var _value = value;
+    return {
+        get: function () {
+            return _value;
+        },
+        set: function (value) {
+            _value = value;
+            eventEmitter.emit('scopeChange', {
+                type: type,
+                value: _value
+            });
+        }
+    };
+}
+
+function createMargin() {
+    return {
+        value: Object.create({}, {
+            lower: {
+                configurable: true,
+                value: 0
+            },
+            higher: {
+                configurable: true,
+                value: 0
+            }
+        })
     }
 }
