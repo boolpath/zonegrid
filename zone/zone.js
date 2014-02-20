@@ -28,6 +28,15 @@ function create(properties) {
 function defineZoneProperties(properties, emitter) {
     var message = 'closure';
     var properties = {
+        // ID of the zone
+        id: {
+            value: properties.name
+        },
+        // Name of the zone
+        name: {
+            writable: true,
+            value: properties.name
+        },
         // Size of the zone
         size: {
             value: Object.create({}, {
@@ -36,13 +45,16 @@ function defineZoneProperties(properties, emitter) {
                 z: sizeGetSet('z', properties.size.z, emitter)
             })
         },
+        // Maximum range of visibility
         visibility: {
             value: Object.create({}, {
                 horizontal: visibilityGetSet('horizontal', properties.visibility.horizontal, emitter),
                 vertical: visibilityGetSet('vertical', properties.visibility.vertical, emitter)
             })
         },
+        // Bookin and checkin margin size
         handover: handoverGetSet(properties.handover, emitter),
+        // Zone scope and handover limits
         margins: {
             value: Object.create({}, {
                 scope: {

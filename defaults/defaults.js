@@ -1,3 +1,10 @@
+/** LOCAL OBJECT 
+ * @property {} - 
+ */
+var DEFAULT = {
+    id: 1
+};
+
 /** MODULE INTERFACE
  *@method {function} - 
  */
@@ -12,7 +19,10 @@ module.exports = {
  * @returns
  */
 function defaultZoneProperties() {
+    var id = DEFAULT.id++;
     return {
+        id: id,
+        name: 'zone' + id,
         size: {
             x: 1000,
             y: 1000,

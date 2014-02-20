@@ -3,6 +3,18 @@ var assert = require('assert'),
     zone = zonegrid.createZone();
 
 describe('zonegrid', function() {
+    describe('.id', function() {
+        it('should fail to set the ID property of a zone', function() {
+            zone.id = 123456789;
+            assert.notEqual(zone.id, 123456789);
+        });
+    });
+    describe('.name', function() {
+        it('should set the name of a zone', function() {
+            zone.name = 'zone';
+            assert.equal(zone.name, 'zone');
+        });
+    });
     describe('.size', function() {
         it('should set the size of a zone', function() {
             zone.size.x = 100;
