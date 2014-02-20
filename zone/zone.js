@@ -16,11 +16,11 @@ module.exports = {
  * @returns {object} zone - The created zone object
  */
 function create(properties) {
-    var zone,
+    var zone = Object.create({}),
         zoneEvents = new EventEmitter(),
         zoneProperties = defineZoneProperties(properties, zoneEvents);
 
-    zone = Object.create({}, zoneProperties);
+    Object.defineProperties(zone, zoneProperties);
 
     return zone;
 }
