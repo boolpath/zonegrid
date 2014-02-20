@@ -73,7 +73,8 @@ function defineZoneProperties(properties, emitter) {
                     })
                 }
             })
-        }
+        },
+        elements: createElementsContainer(emitter)
     };
 
     return properties;
@@ -97,7 +98,7 @@ function sizeGetSet(coordinate, value, emitter) {
     }
 }
 
-function visibilityGetSet(type, value, eventEmitter) {
+function visibilityGetSet(type, value, emitter) {
     var _value = value;
     return {
         get: function () {
@@ -105,7 +106,7 @@ function visibilityGetSet(type, value, eventEmitter) {
         },
         set: function (value) {
             _value = value;
-            eventEmitter.emit('scopeChange', {
+            emitter.emit('scopeChange', {
                 type: type,
                 value: _value
             });
@@ -150,4 +151,55 @@ function createMargins(margins) {
             z: new margin(margins.z)
         })
     }
+}
+
+/*----------------------------------------------------------------------------*/
+
+function createElementsContainer(emitter) {
+    var elements = {},
+        getMethods = function (container) {
+            return {
+                add: { value: addElement.bind(container, emitter) },
+                remove: { value: removeElement.bind(container, emitter) }
+            }
+        },
+        elementMethods = getMethods(elements);
+
+    Object.defineProperties(elements, elementMethods); 
+
+    return {
+        get: function (key) {
+            return (typeof key === 'string') ? elements[key] : elements;
+        },
+        set: function (arrayObject) {
+            if (typeof arrayObject === 'object') {
+                elements = arrayObject;
+                Object.defineProperties(elements, getMethods(elements));
+                return true;
+            }
+            return false;
+        }
+    };
+}
+
+function addElement(emitter, element, key) {
+    if (typeof key === 'string') {
+        this[key] = element;
+        return true;
+    } else if (typeof element.id === 'string') {
+        this[element.id] = element;
+        return true;
+    } else if (typeof element.name === 'string') {
+        this[element.name] = element;
+        return true;
+    }
+    return false;
+}
+
+function removeElement(emitter, key) {
+    var element = this[key];
+    if (typeof element !== 'object') {
+        return false;
+    }
+    return delete this[key];
 }
