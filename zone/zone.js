@@ -47,13 +47,15 @@ function defineZoneProperties(properties, emitter) {
             value: Object.create({}, {
                 scope: {
                     value: Object.create({}, {
-                        x: createMargin(),
-                        y: createMargin(),
-                        z: createMargin()
+                        inner: createMargins(properties.margins.scope.inner),
+                        outer: createMargins(properties.margins.scope.outer)
                     })
                 },
                 handover: {
-
+                    value: Object.create({}, {
+                        bookin: createMargins(properties.margins.handover.bookin),
+                        checkin: createMargins(properties.margins.handover.checkin)
+                    })
                 }
             })
         }
@@ -80,21 +82,6 @@ function sizeGetSet(coordinate, value, emitter) {
     }
 }
 
-function handoverGetSet(value, emitter) {
-    var _value = value;
-    return {
-        get: function () {
-            return _value;
-        },
-        set: function (value) {
-            _value = value;
-            emitter.emit('handoverChange', {
-                value: _value
-            });
-        }
-    }
-}
-
 function visibilityGetSet(type, value, eventEmitter) {
     var _value = value;
     return {
@@ -111,17 +98,41 @@ function visibilityGetSet(type, value, eventEmitter) {
     };
 }
 
-function createMargin() {
+function handoverGetSet(value, emitter) {
+    var _value = value;
     return {
+        get: function () {
+            return _value;
+        },
+        set: function (value) {
+            _value = value;
+            emitter.emit('handoverChange', {
+                value: _value
+            });
+        }
+    }
+}
+
+function createMargins(margins) {
+    function margin(margin) {
+        return {
+            value: Object.create({}, {
+                lower: {
+                    configurable: true,
+                    value: margin.lower
+                },
+                higher: {
+                    configurable: true,
+                    value: margin.higher
+                }
+            })
+        };
+    }
+    return { 
         value: Object.create({}, {
-            lower: {
-                configurable: true,
-                value: 0
-            },
-            higher: {
-                configurable: true,
-                value: 0
-            }
+            x: new margin(margins.x),
+            y: new margin(margins.y),
+            z: new margin(margins.z)
         })
     }
 }
