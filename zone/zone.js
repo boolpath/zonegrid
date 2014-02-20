@@ -17,7 +17,8 @@ module.exports = {
  */
 function create(properties) {
     var zone = Object.create({}),
-        zoneEvents = new EventEmitter(),
+        localNamespace = eventerface.create(),
+        zoneEvents = new localNamespace.emitter(),
         zoneProperties = defineZoneProperties(properties, zoneEvents);
 
     Object.defineProperties(zone, zoneProperties);
