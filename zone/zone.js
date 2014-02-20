@@ -1,5 +1,6 @@
 /* NODE MODULES */
-var eventerface = require('eventerface');
+var eventerface = require('eventerface'),
+    EventEmitter = require('events').EventEmitter;
 
 /** MODULE INTERFACE
  *@method {function} create - 
@@ -16,7 +17,8 @@ module.exports = {
  */
 function create(properties) {
     var zone,
-        zoneProperties = defineZoneProperties();
+        zoneEvents = new EventEmitter(),
+        zoneProperties = defineZoneProperties(zoneEvents);
 
     zone = Object.create({}, zoneProperties);
     zone.size.x = properties.size.x;
@@ -25,39 +27,43 @@ function create(properties) {
     return zone;
 }
 
-function defineZoneProperties() {
+function defineZoneProperties(zoneEvents) {
+    var message = 'closure';
     var properties = {
         // Size of the zone
         size: {
-            enumerable: true,
             value: Object.create({}, {
-                x: {
-                    get: function () {
-                        return this._value;
-                    },
-                    set: function (value) {
-                        this._value = value;
-                    }
+                x: sizeGetterSetter('x', zoneEvents),
+                y: sizeGetterSetter('y', zoneEvents),
+                z: sizeGetterSetter('z', zoneEvents)
+            })
+        },
+        margins: {
+            value: Object.create({}, {
+                scope: {
+                    
                 },
-                y: {
-                    get: function () {
-                        return this._value;
-                    },
-                    set: function (value) {
-                        this._value = value;
-                    }
-                },
-                z: {
-                    get: function () {
-                        return this._value;
-                    },
-                    set: function (value) {
-                        this._value = value;
-                    }
+                handover: {
+
                 }
             })
         }
     };
 
     return properties;
+}
+
+function sizeGetterSetter(coordinate, emitter) {
+    return {
+        get: function () {
+            return this._value;
+        },
+        set: function (value) {
+            this._value = value;
+            emitter.emit('sizeChange', {
+                coordinate: coordinate,
+                value: value
+            });
+        }
+    }
 }
