@@ -19,30 +19,24 @@ module.exports = {
  */
 function create(properties) {
     var zone = Object.create({}),
+        apiNamespace = eventerface.create(),
         localNamespace = eventerface.create(),
-        emitter = new localNamespace.emitter(),
-        zoneProperties = createZoneProperties(properties, emitter);
+        zoneEmitter = localNamespace.emitter(),
+        zoneProperties = createZoneProperties(properties, apiNamespace, zoneEmitter);
 
     Object.defineProperties(zone, zoneProperties);
 
     // Watch and route events on changes to zone properties
     eventerface.find('zone_' + zone.id, function (zoneNamespace) {
         zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
-        var zoneEmit = zone.emit;
-
-        zone.emit = function (event, message) {
-            zoneNamespace.emit('/app/' + event, message);
-            zoneEmit(event, message);
-        }
-
-        zoneEmit('ready');
+        zone.events.emit('ready');
     });
 
     return zone;
 }
 
-function createZoneProperties(properties, emitter) {
-    var apiEmitter = new EventEmitter();
+function createZoneProperties(properties, apiNamespace, zoneEmitter) {
+    var apiEmitter = apiNamespace.emitter();
 
     var properties = {
         // ID of the zone
@@ -57,27 +51,31 @@ function createZoneProperties(properties, emitter) {
                 },
                 set: function (value) {
                     name = value;
-                    emitter.emit('nameChange', name);
+                    zoneEmitter.emit('nameChange', name);
                 }
             };
         })(properties.name),
         // Size of the zone
         size: {
             value: Object.create({}, {
-                x: sizeGetSet('x', properties.size.x, emitter),
-                y: sizeGetSet('y', properties.size.y, emitter),
-                z: sizeGetSet('z', properties.size.z, emitter)
+                x: sizeGetSet('x', properties.size.x, zoneEmitter),
+                y: sizeGetSet('y', properties.size.y, zoneEmitter),
+                z: sizeGetSet('z', properties.size.z, zoneEmitter)
             })
         },
+        // Zone limits
+        limits: {},
+        // Zone center coordinates
+        coordinates: {},
         // Maximum range of visibility
         visibility: {
             value: Object.create({}, {
-                horizontal: visibilityGetSet('horizontal', properties.visibility.horizontal, emitter),
-                vertical: visibilityGetSet('vertical', properties.visibility.vertical, emitter)
+                horizontal: visibilityGetSet('horizontal', properties.visibility.horizontal, zoneEmitter),
+                vertical: visibilityGetSet('vertical', properties.visibility.vertical, zoneEmitter)
             })
         },
         // Bookin and checkin margin size
-        handover: handoverGetSet(properties.handover, emitter),
+        handover: handoverGetSet(properties.handover, zoneEmitter),
         // Zone scope and handover limits
         margins: {
             value: Object.create({}, {
@@ -95,9 +93,12 @@ function createZoneProperties(properties, emitter) {
                 }
             })
         },
-        elements: createElementsContainer(emitter),
+        elements: createElementsContainer(zoneEmitter),
 
         // API events
+        events: {
+            value: apiNamespace.emitter()
+        },
         on: {
             value: function (event, callback) {
                 apiEmitter.on(event, callback);
