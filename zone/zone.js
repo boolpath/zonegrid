@@ -1,5 +1,6 @@
 /* NODE MODULES */
-var eventerface = require('eventerface'),
+var eventerface = require('eventerface')
+    EventEmitter = require('events').EventEmitter,
     zoneEvents = require('./events'),
     watchElement = require('../watch').element;
 
@@ -20,17 +21,20 @@ function create(properties) {
     var zone = Object.create({}),
         localNamespace = eventerface.create(),
         emitter = new localNamespace.emitter(),
-        zoneProperties = defineZoneProperties(properties, emitter);
-
-    // Watch and route events on changes to zone properties
-    zoneEvents.watchProperties(zone, localNamespace.emitter());
+        zoneProperties = createZoneProperties(properties, emitter);
 
     Object.defineProperties(zone, zoneProperties);
+
+    // Watch and route events on changes to zone properties
+    eventerface.find('zone_' + zone.id, function (zoneNamespace) {
+        zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
+        zone.events.emit('ready');
+    });
 
     return zone;
 }
 
-function defineZoneProperties(properties, emitter) {
+function createZoneProperties(properties, emitter) {
     var properties = {
         // ID of the zone
         id: {
@@ -82,7 +86,12 @@ function defineZoneProperties(properties, emitter) {
                 }
             })
         },
-        elements: createElementsContainer(emitter)
+        elements: createElementsContainer(emitter),
+
+        events: {
+            writable: true,
+            value: new EventEmitter()
+        }
     };
 
     return properties;
