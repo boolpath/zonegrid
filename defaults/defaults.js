@@ -26,8 +26,27 @@ function defaultZoneProperties() {
         size: {
             x: 1000,
             y: 1000,
-            z: 0
+            z: Infinity
         },
+        limits: {
+            x: {
+                lower: -500,
+                higher: 500
+            },
+            y: {   
+                lower: -500,
+                higher: 500
+            },
+            z: {
+                lower: -Infinity,
+                higher: Infinity
+            } 
+        },
+        coordinates: {
+            x: 0
+            y: 0
+            z: 0
+        }
         visibility: {
             horizontal: 100,
             vertical: 100
@@ -37,60 +56,60 @@ function defaultZoneProperties() {
             scope: {
                 inner: {
                     x: {
-                        lower: 100,
-                        higher: 900
+                        lower: -400,
+                        higher: 400
                     },
                     y: {   
-                        lower: 100,
-                        higher: 900
+                        lower: -400,
+                        higher: 400
                     },
                     z: {
-                        lower: 0,
-                        higher: 100
+                        lower: -Infinity,
+                        higher: Infinity
                     }
                 },
                 outer: {
                     x: {
-                        lower: -100,
-                        higher: 1100
+                        lower: -600,
+                        higher: 600
                     },
                     y: {   
-                        lower: -100,
-                        higher: 1100
+                        lower: -600,
+                        higher: 600
                     },
                     z: {
-                        lower: 0,
-                        higher: 100
+                        lower: -Infinity,
+                        higher: Infinity
                     }
                 }
             },
             handover: {
                 bookin: {
                     x: {
-                        lower: 50,
-                        higher: 950
+                        lower: -450,
+                        higher: 450
                     },
                     y: {   
-                        lower: 50,
-                        higher: 950
+                        lower: -450,
+                        higher: 450
                     },
                     z: {
-                        lower: 0,
-                        higher: 0
+                        lower: -Infinity,
+                        higher: Infinity
                     }
                 },
                 checkin: {
                     x: {
-                        lower: -50,
-                        higher: 1050
+                        lower: -550,
+                        higher: 550
                     },
                     y: {   
-                        lower: -50,
-                        higher: 1050
+                        lower: -550,
+                        higher: 550
                     },
                     z: {
-                        lower: 0,
-                        higher: 0
+                        lower: -Infinity,
+                        higher: Infinity
                     }
                 }
             }
