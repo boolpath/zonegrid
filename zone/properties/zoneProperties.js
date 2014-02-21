@@ -1,4 +1,5 @@
 /* NODE MODULES */
+var zoneElements = require('../elements');
 
 /** MODULE INTERFACE
  *@method {function} define - Define the properties of a zone and attach event emitters monitor their changes
@@ -14,10 +15,10 @@ module.exports = {
  * @returns
  */
 function define(properties, zoneEmitter, apiNamespace) {
-    function createZoneProperties(properties, apiNamespace) {
+    function createZoneProperties() {
         var apiEmitter = apiNamespace.emitter();
 
-        var properties = {
+        var zoneProperties = {
             // ID of the zone
             id: {
                 value: properties.id
@@ -68,7 +69,7 @@ function define(properties, zoneEmitter, apiNamespace) {
                     }
                 })
             },
-            elements: createElementsContainer(),
+            elements: zoneElements.createContainer(zoneEmitter),
 
             // API events
             events: {
@@ -87,7 +88,7 @@ function define(properties, zoneEmitter, apiNamespace) {
             }
         };
 
-        return properties;
+        return zoneProperties;
     }
 
     /*----------------------------------------------------------------------------*/
@@ -156,71 +157,5 @@ function define(properties, zoneEmitter, apiNamespace) {
 
     /*----------------------------------------------------------------------------*/
 
-    function createElementsContainer() {
-        var elements = {},
-            getMethods = function (container) {
-                return {
-                    add: { value: addElement.bind(container) },
-                    remove: { value: removeElement.bind(container) }
-                }
-            },
-            elementMethods = getMethods(elements);
-
-        Object.defineProperties(elements, elementMethods); 
-
-        return {
-            get: function (key) {
-                return (typeof key === 'string') ? elements[key] : elements;
-            },
-            set: function (arrayObject) {
-                if (typeof arrayObject === 'object') {
-                    elements = arrayObject;
-                    Object.defineProperties(elements, getMethods(elements));
-                    return true;
-                }
-                return false;
-            }
-        };
-    }
-
-    function addElement(element, key) {
-        var elements = this,
-            addWith,
-            id = element.id,
-            name = element.name;
-
-        if (typeof key === 'string' && !elements[key]) {
-            addWith = key;
-        } else if (typeof id === 'string' && !elements[id]) {
-            addWith = id;
-        } else if (typeof name === 'string' && !elements[name]) {
-            addWith = name;
-        }
-
-        if (addWith) {
-            Object.defineProperty(elements, addWith, {
-                enumerable: true,
-                writable: true,
-                configurable: true,
-                value: watchElement(element, zoneEmitter)
-            });
-            zoneEmitter.emit('addElement', elements[addWith]);
-        }
-
-        return addWith;
-    }
-
-    function removeElement(key) {
-        var elements = this;
-        if (typeof elements[key] !== 'object') {
-            return false;
-        } else { 
-            delete elements[key];
-            zoneEmitter.emit('removeElement', key);
-            return true;
-        }
-    }
-
-
-    return createZoneProperties(properties, apiNamespace);
+    return createZoneProperties();
 }
