@@ -167,9 +167,9 @@ function create(properties) {
         }
         return { 
             value: Object.create({}, {
-                x: new margin('x', margins.x),
-                y: new margin('y', margins.y),
-                z: new margin('z', margins.z)
+                x: margin('x', margins.x),
+                y: margin('y', margins.y),
+                z: margin('z', margins.z)
             })
         }
     } 

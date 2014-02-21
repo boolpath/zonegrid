@@ -25,6 +25,34 @@ describe('zonegrid', function() {
             assert.equal(zone.size.z, 300);
         });
     });
+    describe('.limits', function() {
+        it('should fail to set the limits of a zone', function() {
+            var limit = 100000;
+            zone.limits.x.lower  = -limit;
+            zone.limits.x.higher =  limit;
+            zone.limits.y.lower  = -limit;
+            zone.limits.y.higher =  limit;
+            zone.limits.z.lower  = -limit;
+            zone.limits.z.higher =  limit;
+
+            assert.notEqual(zone.limits.x.lower, -limit);
+            assert.notEqual(zone.limits.x.lower,  limit);
+            assert.notEqual(zone.limits.y.lower, -limit);
+            assert.notEqual(zone.limits.y.higher, limit);
+            assert.notEqual(zone.limits.z.lower, -limit);
+            assert.notEqual(zone.limits.z.higher, limit);
+        });
+    });
+    describe('.coordinates', function() {
+        it('should ]set the coordinates of a zone', function() {
+            zone.coordinates.x = 100;
+            zone.coordinates.y = 200;
+            zone.coordinates.z = 300;
+            assert.equal(zone.coordinates.x, 100);
+            assert.equal(zone.coordinates.y, 200);
+            assert.equal(zone.coordinates.z, 300);
+        });
+    });
     describe('.visibility', function() {
         it('should set the visibility of a zone', function() {
             zone.visibility.horizontal = 100;
