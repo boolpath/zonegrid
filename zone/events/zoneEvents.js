@@ -32,4 +32,8 @@ function watchProperties(zone, properties) {
     properties.on('removeElement', function (key) {
 
     });
+
+    properties.on('positionChange', function (change) {
+        console.log(change.element.name, change.property, change.value);
+    });
 }

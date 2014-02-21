@@ -1,6 +1,7 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
-    zoneEvents = require('./events');
+    zoneEvents = require('./events'),
+    watchElement = require('../element').watch;
 
 /** MODULE INTERFACE
  *@method {function} create - 
@@ -208,7 +209,7 @@ function addElement(emitter, element, key) {
             enumerable: true,
             writable: true,
             configurable: true,
-            value: element
+            value: watchElement(element, emitter)
         });
         emitter.emit('addElement', elements[addWith]);
     }
