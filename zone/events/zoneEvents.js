@@ -13,16 +13,34 @@ module.exports = {
 function watchProperties(zone, properties) {
     // Zone properties
     properties.on('nameChange', function (name) {
-
+        console.log('nameChange');
     });
     properties.on('sizeChange', function (change) {
-
+        console.log('sizeChange');
     });
-    properties.on('scopeChange', function (change) {
-
+    properties.on('limitsChange', function (change) {
+        console.log('limitsChange');
+    });
+    properties.on('coordinatesChange', function (change) {
+        console.log('coordinatesChange');
+    });
+    properties.on('visibilityChange', function (change) {
+        console.log('visibilityChange');
     });
     properties.on('handoverChange', function (change) {
-
+        console.log('handoverChange');
+    });
+    properties.on('innerScopeChange', function (change) {
+        console.log('innerScopeChange');
+    });
+    properties.on('outerScopeChange', function (change) {
+        console.log('outerScopeChange');
+    });
+    properties.on('bookinMarginChange', function (change) {
+        console.log('bookinMarginChange');
+    });
+    properties.on('checkinMarginChange', function (change) {
+        console.log('checkinMarginChange');
     });
 
     // Zone elements
@@ -33,6 +51,6 @@ function watchProperties(zone, properties) {
 
     });
     properties.on('positionChange', function (change) {
-        
+
     });
 }

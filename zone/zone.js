@@ -44,51 +44,47 @@ function createZoneProperties(properties, apiNamespace, zoneEmitter) {
             value: properties.id
         },
         // Name of the zone
-        name: (function (name) {
-            return {
-                get: function () {
-                    return name;
-                },
-                set: function (value) {
-                    name = value;
-                    zoneEmitter.emit('nameChange', name);
-                }
-            };
-        })(properties.name),
+        name: changeGetterSetter('name', 'name', properties.name, zoneEmitter),
         // Size of the zone
         size: {
             value: Object.create({}, {
-                x: sizeGetSet('x', properties.size.x, zoneEmitter),
-                y: sizeGetSet('y', properties.size.y, zoneEmitter),
-                z: sizeGetSet('z', properties.size.z, zoneEmitter)
+                x: changeGetterSetter('size', 'x', properties.size.x, zoneEmitter),
+                y: changeGetterSetter('size', 'y', properties.size.y, zoneEmitter),
+                z: changeGetterSetter('size', 'z', properties.size.z, zoneEmitter)
             })
         },
         // Zone limits
-        limits: {},
+        limits: marginGetterSetter('limits', properties.limits, zoneEmitter),
         // Zone center coordinates
-        coordinates: {},
+        coordinates: {
+            value: Object.create({}, {
+                x: changeGetterSetter('coordinates', 'x', properties.coordinates.x, zoneEmitter),
+                y: changeGetterSetter('coordinates', 'y', properties.coordinates.y, zoneEmitter),
+                z: changeGetterSetter('coordinates', 'z', properties.coordinates.z, zoneEmitter)
+            })
+        },
         // Maximum range of visibility
         visibility: {
             value: Object.create({}, {
-                horizontal: visibilityGetSet('horizontal', properties.visibility.horizontal, zoneEmitter),
-                vertical: visibilityGetSet('vertical', properties.visibility.vertical, zoneEmitter)
+                horizontal: changeGetterSetter('visibility', 'horizontal', properties.visibility.horizontal, zoneEmitter),
+                vertical: changeGetterSetter('visibility', 'vertical', properties.visibility.vertical, zoneEmitter)
             })
         },
         // Bookin and checkin margin size
-        handover: handoverGetSet(properties.handover, zoneEmitter),
+        handover: changeGetterSetter('handover', 'handover', properties.handover, zoneEmitter),
         // Zone scope and handover limits
         margins: {
             value: Object.create({}, {
                 scope: {
                     value: Object.create({}, {
-                        inner: createMargins(properties.margins.scope.inner),
-                        outer: createMargins(properties.margins.scope.outer)
+                        inner: marginGetterSetter('innerScope', properties.margins.scope.inner, zoneEmitter),
+                        outer: marginGetterSetter('outerScope', properties.margins.scope.outer, zoneEmitter)
                     })
                 },
                 handover: {
                     value: Object.create({}, {
-                        bookin: createMargins(properties.margins.handover.bookin),
-                        checkin: createMargins(properties.margins.handover.checkin)
+                        bookin: marginGetterSetter('bookinMargin', properties.margins.handover.bookin, zoneEmitter),
+                        checkin: marginGetterSetter('checkinMargin', properties.margins.handover.checkin, zoneEmitter)
                     })
                 }
             })
@@ -117,76 +113,67 @@ function createZoneProperties(properties, apiNamespace, zoneEmitter) {
 
 /*----------------------------------------------------------------------------*/
 
-function sizeGetSet(coordinate, value, emitter) {
-    var _value = value;
+function changeGetterSetter(typeofChange, propertyChanged, initialValue, eventEmitter) {
+    var value = initialValue;
     return {
         get: function () {
-            return _value;
+            return value;
         },
-        set: function (value) {
-            _value = value;
-            emitter.emit('sizeChange', {
-                coordinate: coordinate,
-                value: _value
+        set: function (newValue) {
+            value = newValue;
+            eventEmitter.emit(typeofChange + 'Change', {
+                property: propertyChanged,
+                value: newValue
             });
         }
     }
 }
 
-function visibilityGetSet(type, value, emitter) {
-    var _value = value;
-    return {
-        get: function () {
-            return _value;
-        },
-        set: function (value) {
-            _value = value;
-            emitter.emit('scopeChange', {
-                type: type,
-                value: _value
-            });
-        }
-    };
-}
-
-function handoverGetSet(value, emitter) {
-    var _value = value;
-    return {
-        get: function () {
-            return _value;
-        },
-        set: function (value) {
-            _value = value;
-            emitter.emit('handoverChange', {
-                value: _value
-            });
-        }
-    }
-}
-
-function createMargins(margins) {
-    function margin(margin) {
+function marginGetterSetter(typeofChange, margins, emitter) {
+    function margin(propertyChanged, margin) {
         return {
             value: Object.create({}, {
-                lower: {
-                    configurable: true,
-                    value: margin.lower
-                },
-                higher: {
-                    configurable: true,
-                    value: margin.higher
-                }
+                lower: (function (value) {
+                    return {
+                        get: function () {
+                            return value;
+                        },
+                        set: function (newValue) {
+                            // value = newValue;
+                            emitter.emit(typeofChange + 'Change', {
+                                property: propertyChanged,
+                                side: 'lower',
+                                value: newValue
+                            });
+                        }
+                    };
+                })(margin.lower),
+                higher: (function (value) {
+                    return {
+                        get: function () {
+                            return value;
+                        },
+                        set: function (newValue) {
+                            // value = newValue;
+                            emitter.emit(typeofChange + 'Change', {
+                                property: propertyChanged,
+                                side: 'higher',
+                                value: newValue
+                            });
+                        }
+                    };
+                })(margin.higher)
             })
         };
     }
     return { 
         value: Object.create({}, {
-            x: new margin(margins.x),
-            y: new margin(margins.y),
-            z: new margin(margins.z)
+            x: new margin('x', margins.x),
+            y: new margin('y', margins.y),
+            z: new margin('z', margins.z)
         })
     }
-}
+} 
 
 /*----------------------------------------------------------------------------*/
 
