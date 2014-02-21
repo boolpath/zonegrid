@@ -1,3 +1,6 @@
+/* NODE MODULES */
+// var watchElement = require('../../watch').element;
+
 /** MODULE INTERFACE
  *@method {function} - 
  */

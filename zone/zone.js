@@ -2,9 +2,8 @@
 var eventerface = require('eventerface')
     EventEmitter = require('events').EventEmitter,
     zoneProperties = require('./properties'),
-    zoneEvents = require('./events'),
-    watchElement = require('../watch').element;
-console.log(zoneProperties)
+    zoneEvents = require('./events');
+
 /** MODULE INTERFACE
  *@method {function} create - 
  */
@@ -33,11 +32,6 @@ function create(properties) {
         zone.events.emit('ready');
     });
 
-    /*----------------------------------------------------------------------------*/
-    
-
-/*----------------------------------------------------------------------------*/
-// END OF #CREATE
     return zone;
 }
 /*----------------------------------------------------------------------------*/
