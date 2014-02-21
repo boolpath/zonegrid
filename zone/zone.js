@@ -183,23 +183,35 @@ function createElementsContainer(emitter) {
 }
 
 function addElement(emitter, element, key) {
-    if (typeof key === 'string') {
+    var addedWith,
+        id = element.id,
+        name = element.name;
+
+    if (typeof key === 'string' && !this[key]) {
         this[key] = element;
-        return true;
-    } else if (typeof element.id === 'string') {
-        this[element.id] = element;
-        return true;
-    } else if (typeof element.name === 'string') {
-        this[element.name] = element;
-        return true;
+        addedWith = key;
+    } else if (typeof id === 'string' && !this[id]) {
+        this[id] = element;
+        addedWith = id;
+    } else if (typeof name === 'string' && !this[name]) {
+        this[name] = element;
+        addedWith = name;
     }
-    return false;
+
+    if (addedWith) {
+        emitter.emit('addElement', this[addedWith]);
+    }
+
+    return addedWith;
 }
 
 function removeElement(emitter, key) {
     var element = this[key];
     if (typeof element !== 'object') {
         return false;
+    } else { 
+        delete this[key];
+        emitter.emit('removeElement', key);
+        return true;
     }
-    return delete this[key];
 }
