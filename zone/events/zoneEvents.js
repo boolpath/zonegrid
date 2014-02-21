@@ -14,7 +14,22 @@ module.exports = {
  * @param {object} properties - Event emitter fired when zone properties are changed
  */
 function watchProperties(zone, properties) {
+    properties.on('nameChange', function (name) {
+
+    });
     properties.on('sizeChange', function (change) {
-        console.log(change);
+
+    });
+    properties.on('scopeChange', function (change) {
+
+    });
+    properties.on('handoverChange', function (change) {
+
+    });
+    properties.on('addElement', function (element) {
+
+    });
+    properties.on('removeElement', function (key) {
+
     });
 }
