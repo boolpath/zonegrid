@@ -1,5 +1,5 @@
 /* NODE MODULES */
-// var watchElement = require('../../watch').element;
+var watchElement = require('../../watch').element;
 
 /** MODULE INTERFACE
  *@method {function} - 
@@ -35,6 +35,11 @@ function createContainer(zoneEmitter) {
                 if (typeof arrayObject === 'object') {
                     elements = arrayObject;
                     Object.defineProperties(elements, getMethods(elements));
+                    for (var key in elements) {
+                        if (elements.hasOwnProperty(key)) {
+                            elements[key] = watchElement(elements[key], zoneEmitter);
+                        }
+                    }
                     return true;
                 }
                 return false;

@@ -45,12 +45,12 @@ function watchProperties(zone, properties) {
 
     // Zone elements
     properties.on('addElement', function (element) {
-
+        // console.log('addElement');
     });
     properties.on('removeElement', function (key) {
-
+        // console.log('removeElement');
     });
     properties.on('positionChange', function (change) {
-
+        // console.log('positionChange');
     });
 }
