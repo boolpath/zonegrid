@@ -43,7 +43,7 @@ function defineZoneProperties(properties, emitter) {
                 },
                 set: function (value) {
                     name = value;
-                    emitter.emit('nameChange');
+                    emitter.emit('nameChange', name);
                 }
             };
         })(properties.name),
@@ -190,34 +190,38 @@ function createElementsContainer(emitter) {
 }
 
 function addElement(emitter, element, key) {
-    var addedWith,
+    var elements = this,
+        addWith,
         id = element.id,
         name = element.name;
 
-    if (typeof key === 'string' && !this[key]) {
-        this[key] = element;
-        addedWith = key;
-    } else if (typeof id === 'string' && !this[id]) {
-        this[id] = element;
-        addedWith = id;
-    } else if (typeof name === 'string' && !this[name]) {
-        this[name] = element;
-        addedWith = name;
+    if (typeof key === 'string' && !elements[key]) {
+        addWith = key;
+    } else if (typeof id === 'string' && !elements[id]) {
+        addWith = id;
+    } else if (typeof name === 'string' && !elements[name]) {
+        addWith = name;
     }
 
-    if (addedWith) {
-        emitter.emit('addElement', this[addedWith]);
+    if (addWith) {
+        Object.defineProperty(elements, addWith, {
+            enumerable: true,
+            writable: true,
+            configurable: true,
+            value: element
+        });
+        emitter.emit('addElement', elements[addWith]);
     }
 
-    return addedWith;
+    return addWith;
 }
 
 function removeElement(emitter, key) {
-    var element = this[key];
-    if (typeof element !== 'object') {
+    var elements = this;
+    if (typeof elements[key] !== 'object') {
         return false;
     } else { 
-        delete this[key];
+        delete elements[key];
         emitter.emit('removeElement', key);
         return true;
     }
