@@ -28,7 +28,14 @@ function create(properties) {
     // Watch and route events on changes to zone properties
     eventerface.find('zone_' + zone.id, function (zoneNamespace) {
         zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
-        zone.emit('ready');
+        var zoneEmit = zone.emit;
+
+        zone.emit = function (event, message) {
+            zoneNamespace.emit('/app/' + event, message);
+            zoneEmit(event, message);
+        }
+
+        zoneEmit('ready');
     });
 
     return zone;
@@ -97,6 +104,7 @@ function createZoneProperties(properties, emitter) {
             }
         },
         emit: {
+            writable: true,
             value: function (event, message) {
                 apiEmitter.emit(event, message);
             }
