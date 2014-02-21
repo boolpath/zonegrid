@@ -33,13 +33,20 @@ function defineZoneProperties(properties, emitter) {
     var properties = {
         // ID of the zone
         id: {
-            value: properties.name
+            value: properties.id
         },
         // Name of the zone
-        name: {
-            writable: true,
-            value: properties.name
-        },
+        name: (function (name) {
+            return {
+                get: function () {
+                    return name;
+                },
+                set: function (value) {
+                    name = value;
+                    emitter.emit('nameChange');
+                }
+            };
+        })(properties.name),
         // Size of the zone
         size: {
             value: Object.create({}, {
