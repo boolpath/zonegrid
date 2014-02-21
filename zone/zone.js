@@ -1,7 +1,7 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
     zoneEvents = require('./events'),
-    watchElement = require('../element').watch;
+    watchElement = require('../watch').element;
 
 /** MODULE INTERFACE
  *@method {function} create - 

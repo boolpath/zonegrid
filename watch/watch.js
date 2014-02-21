@@ -2,7 +2,7 @@
  *@method {function} - 
  */
 module.exports = {
-    watch: watch
+    element: watchElement
 };
 
 /*----------------------------------------------------------------------------*/
@@ -11,7 +11,7 @@ module.exports = {
  * @param {object} emitter - The event emitter that will be used to notify the changes
  * @returns
  */
-function watch(element, emitter) {
+function watchElement(element, emitter) {
     var watchedElement,
         position;
 
