@@ -28,13 +28,15 @@ function create(properties) {
     // Watch and route events on changes to zone properties
     eventerface.find('zone_' + zone.id, function (zoneNamespace) {
         zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
-        zone.events.emit('ready');
+        zone.emit('ready');
     });
 
     return zone;
 }
 
 function createZoneProperties(properties, emitter) {
+    var apiEmitter = new EventEmitter();
+
     var properties = {
         // ID of the zone
         id: {
@@ -88,9 +90,16 @@ function createZoneProperties(properties, emitter) {
         },
         elements: createElementsContainer(emitter),
 
-        events: {
-            writable: true,
-            value: new EventEmitter()
+        // API events
+        on: {
+            value: function (event, callback) {
+                apiEmitter.on(event, callback);
+            }
+        },
+        emit: {
+            value: function (event, message) {
+                apiEmitter.emit(event, message);
+            }
         }
     };
 
