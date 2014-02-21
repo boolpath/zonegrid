@@ -115,4 +115,22 @@ describe('zonegrid', function() {
             assert.notEqual(zone.margins.handover.checkin.z.higher, newMargin);
         });
     });
+    describe('.margins.elements#add', function(){
+        it('should add elements to a zone', function() {
+            var elements = { foo: { name: 'foo' } };
+            zone.elements = elements;
+            assert.equal(zone.elements.foo, elements.foo);
+            zone.elements.add({ name: 'bar' });
+            assert.equal(zone.elements.bar.name, 'bar');
+        });
+    });
+    describe('.margins.elements#remove', function(){
+        it('should add elements to a zone', function() {
+            var elements = { foo: { name: 'foo' } };
+            zone.elements = elements;
+            assert.equal(zone.elements.foo, elements.foo);
+            zone.elements.remove('foo');
+            assert.equal(zone.elements.foo, undefined);
+        });
+    });
 });
