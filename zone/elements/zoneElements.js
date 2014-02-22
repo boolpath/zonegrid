@@ -65,7 +65,7 @@ function createContainer(zoneNamespace) {
                 configurable: true,
                 value: watchElement(element)
             });
-            zoneNamespace.emit('addElement', elements[addWith]);
+            zoneNamespace.emit('/element/add', elements[addWith]);
         }
 
         return addWith;
@@ -77,7 +77,7 @@ function createContainer(zoneNamespace) {
             return false;
         } else { 
             delete elements[key];
-            zoneNamespace.emit('removeElement', key);
+            zoneNamespace.emit('/element/remove', key);
             return true;
         }
     }
@@ -124,7 +124,7 @@ function createContainer(zoneNamespace) {
                 },
                 set: function (newValue) {
                     value = newValue;
-                    zoneNamespace.emit(typeofChange + 'Change', {
+                    zoneNamespace.emit('/element/' + typeofChange + 'Change', {
                         element: element,
                         property: changedProperty, 
                         value: newValue
