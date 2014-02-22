@@ -1,5 +1,6 @@
 /* NODE MODULES */
-var zoneElements = require('../elements');
+var zoneElements = require('../elements'),
+    zoneQuadrants = require('../quadrants');
 
 /** MODULE INTERFACE
  *@method {function} define - Define the properties of a zone and attach event emitters monitor their changes
@@ -86,6 +87,10 @@ function define(properties, zoneEmitter, apiNamespace) {
                     apiEmitter.emit(event, message);
                 }
             }
+        };
+
+        zoneProperties.quadrants = {
+            value: zoneQuadrants.create(zoneProperties.margins.value)
         };
 
         return zoneProperties;
