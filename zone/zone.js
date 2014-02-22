@@ -20,16 +20,21 @@ module.exports = {
 function create(properties) {
     var zone = Object.create({}),
         apiNamespace = eventerface.create(),
-        localNamespace = eventerface.create(),
-        zoneEmitter = localNamespace.emitter(),
-        properties = zoneProperties.define(properties, zoneEmitter, apiNamespace);
+        apiEmitter = apiNamespace.emitter(),
+        localNamespace = eventerface.create();
 
-    Object.defineProperties(zone, properties);
+    Object.defineProperties(zone, {
+        moduleapi: { value: apiNamespace.emitter() },
+        on:     { value: apiEmitter.on },
+        emit:   { value: apiEmitter.emit }
+    });
 
-    // Watch and route events on changes to zone properties
-    eventerface.find('zone_' + zone.id, function (zoneNamespace) {
+    // Join the created zone namespace and define the properties of the zone object
+    eventerface.find('zone_' + properties.id, function (zoneNamespace) {
         zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
-        zone.events.emit('ready');
+        properties = zoneProperties.define(properties, localNamespace.emitter());
+        Object.defineProperties(zone, properties);
+        zone.moduleapi.emit('ready');
     });
 
     return zone;
