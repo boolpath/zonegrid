@@ -1,6 +1,3 @@
-/* NODE MODULES */
-var watchElement = require('../../watch').element;
-
 /** MODULE INTERFACE
  *@method {function} - 
  */
@@ -14,8 +11,8 @@ module.exports = {
  * @param
  * @returns
  */
-function createContainer(zoneEmitter) {
-    function createElementsContainer() {
+function createContainer(zoneNamespace) {
+    return (function createElementsContainer() {
         var elements = {},
             getMethods = function (container) {
                 return {
@@ -37,7 +34,7 @@ function createContainer(zoneEmitter) {
                     Object.defineProperties(elements, getMethods(elements));
                     for (var key in elements) {
                         if (elements.hasOwnProperty(key)) {
-                            elements[key] = watchElement(elements[key], zoneEmitter);
+                            elements[key] = watchElement(elements[key], zoneNamespace);
                         }
                     }
                     return true;
@@ -45,7 +42,7 @@ function createContainer(zoneEmitter) {
                 return false;
             }
         };
-    }
+    })();
 
     function addElement(element, key) {
         var elements = this,
@@ -66,9 +63,9 @@ function createContainer(zoneEmitter) {
                 enumerable: true,
                 writable: true,
                 configurable: true,
-                value: watchElement(element, zoneEmitter)
+                value: watchElement(element)
             });
-            zoneEmitter.emit('addElement', elements[addWith]);
+            zoneNamespace.emit('addElement', elements[addWith]);
         }
 
         return addWith;
@@ -80,10 +77,60 @@ function createContainer(zoneEmitter) {
             return false;
         } else { 
             delete elements[key];
-            zoneEmitter.emit('removeElement', key);
+            zoneNamespace.emit('removeElement', key);
             return true;
         }
     }
 
-    return createElementsContainer();
+    function watchElement(element, emitter) {
+        var watchedElement,
+            position;
+
+        // Position
+        if (typeof element.position === 'object') {
+            position = { 
+                x: element.position.x || 0,
+                y: element.position.y || 0,
+                z: element.position.z || 0
+            };
+        } else {
+            position = { x: 0, y: 0, z: 0 }
+        }
+        // Try to redefine the position property
+        position = Object.create({}, { 
+            x: changeGetterSetter('position', 'x', position.x).call(element),
+            y: changeGetterSetter('position', 'y', position.y).call(element),
+            z: changeGetterSetter('position', 'z', position.z).call(element)
+        });
+        try {
+            Object.defineProperty(element, 'position', { value: position });
+            watchedElement = element;
+        } catch (e) {
+            watchedElement = Object.create(element);
+            Object.defineProperty(watchedElement, 'position', position);
+        }
+
+        return watchedElement;
+    }
+
+    function changeGetterSetter(typeofChange, changedProperty, initialValue) {
+        return function () {
+            var element = this,
+                value = initialValue;
+                
+            return {
+                get: function () {
+                    return value;
+                },
+                set: function (newValue) {
+                    value = newValue;
+                    zoneNamespace.emit(typeofChange + 'Change', {
+                        element: element,
+                        property: changedProperty, 
+                        value: newValue
+                    });
+                }
+            }
+        };
+    }
 }
