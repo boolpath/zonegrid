@@ -30,9 +30,9 @@ function create(properties) {
     });
 
     // Join the created zone namespace and define the properties of the zone object
-    eventerface.find('zone_' + properties.id, function (zoneNamespace) {
-        zoneEvents.watchProperties(zoneNamespace, localNamespace.emitter());
-        properties = zoneProperties.define(properties, localNamespace.emitter());
+    eventerface.find('zone_' + properties.id, function (globalNamespace) {
+        zoneEvents.watchProperties(globalNamespace, localNamespace.emitter());
+        properties = zoneProperties.define(properties, globalNamespace, localNamespace);
         Object.defineProperties(zone, properties);
         zone.moduleapi.emit('ready');
     });
