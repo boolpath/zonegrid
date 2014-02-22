@@ -15,10 +15,8 @@ module.exports = {
  * @param
  * @returns
  */
-function define(properties, zoneEmitter, apiNamespace) {
+function define(properties, zoneNamespace) {
     function createZoneProperties() {
-        var apiEmitter = apiNamespace.emitter();
-
         var zoneProperties = {
             // ID of the zone
             id: {
@@ -70,23 +68,7 @@ function define(properties, zoneEmitter, apiNamespace) {
                     }
                 })
             },
-            elements: zoneElements.createContainer(zoneEmitter),
-
-            // API events
-            events: {
-                value: apiNamespace.emitter()
-            },
-            on: {
-                value: function (event, callback) {
-                    apiEmitter.on(event, callback);
-                }
-            },
-            emit: {
-                writable: true,
-                value: function (event, message) {
-                    apiEmitter.emit(event, message);
-                }
-            }
+            elements: zoneElements.createContainer(zoneNamespace)
         };
 
         zoneProperties.quadrants = {
@@ -106,7 +88,7 @@ function define(properties, zoneEmitter, apiNamespace) {
             },
             set: function (newValue) {
                 value = newValue;
-                zoneEmitter.emit(typeofChange + 'Change', {
+                zoneNamespace.emit(typeofChange + 'Change', {
                     property: propertyChanged,
                     value: newValue
                 });
@@ -125,7 +107,7 @@ function define(properties, zoneEmitter, apiNamespace) {
                             },
                             set: function (newValue) {
                                 // value = newValue;
-                                zoneEmitter.emit(typeofChange + 'Change', {
+                                zoneNamespace.emit(typeofChange + 'Change', {
                                     property: propertyChanged,
                                     side: 'lower',
                                     value: newValue
@@ -140,7 +122,7 @@ function define(properties, zoneEmitter, apiNamespace) {
                             },
                             set: function (newValue) {
                                 // value = newValue;
-                                zoneEmitter.emit(typeofChange + 'Change', {
+                                zoneNamespace.emit(typeofChange + 'Change', {
                                     property: propertyChanged,
                                     side: 'higher',
                                     value: newValue
