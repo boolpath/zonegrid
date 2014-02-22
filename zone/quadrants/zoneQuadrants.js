@@ -3,23 +3,6 @@
  */
 var BANDS = ['lower.scopeout', 'lower.checkin',  'lower.bookin',  'lower.scopein', 'zone',
              'higher.scopein', 'higher.bookin', 'higher.checkin', 'higher.scopeout'];
-var QUADRANTS = [
-    [
-        [],
-        [],
-        []
-    ],
-    [
-        [],
-        [],
-        []
-    ],
-    [
-        [],
-        [],
-        []
-    ]
-];
 
 /** MODULE INTERFACE
  *@method {function} - 
@@ -68,7 +51,7 @@ function which(coordinates, lastQuadrant) {
 }
 
 function getCoordinateIndex(coordinate, value, quadrants, lastQuadrant) {
-    var start, length = quadrants.x.length, end;
+    var start, end, length = quadrants.x.length;
     if (lastQuadrant[coordinate]) {
         start = Math.max(lastQuadrant[coordinate] - 1, 0);
         end = Math.min(start + 2, length);
