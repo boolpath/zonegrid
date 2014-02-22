@@ -1,8 +1,14 @@
 var assert = require('assert'),
     zonegrid = require('zonegrid'),
-    zone = zonegrid.createZone();
+    zone;
 
 describe('zonegrid', function() {
+    before(function (done) {
+        zone = zonegrid.createZone();
+        zone.on('ready', function() {
+            done();
+        });
+    });
     describe('.id', function() {
         it('should fail to set the ID property of a zone', function() {
             zone.id = 123456789;
@@ -67,7 +73,7 @@ describe('zonegrid', function() {
             assert.equal(zone.handover, 10);
         });
     });
-    describe('.margins.scope.inner', function(){
+    describe('.margins.scope.inner', function() {
         it('should fail to set the inner scope margins of a zone', function() {
             var newMargin = 100000;
 
@@ -86,7 +92,7 @@ describe('zonegrid', function() {
             assert.notEqual(zone.margins.scope.inner.z.higher, newMargin);
         });
     });
-    describe('.margins.scope.outer', function(){
+    describe('.margins.scope.outer', function() {
         it('should fail to set the inner scope margins of a zone', function() {
             var newMargin = 100000;
 
@@ -105,7 +111,7 @@ describe('zonegrid', function() {
             assert.notEqual(zone.margins.scope.outer.z.higher, newMargin);
         });
     }); 
-    describe('.margins.handover.bookin', function(){
+    describe('.margins.handover.bookin', function() {
         it('should fail to set the inner scope margins of a zone', function() {
             var newMargin = 100000; 
 
@@ -124,7 +130,7 @@ describe('zonegrid', function() {
             assert.notEqual(zone.margins.handover.bookin.z.higher, newMargin);
         });
     });
-    describe('.margins.handover.checkin', function(){
+    describe('.margins.handover.checkin', function() {
         it('should fail to set the inner scope margins of a zone', function() {
             var newMargin = 100000; 
 
@@ -143,7 +149,7 @@ describe('zonegrid', function() {
             assert.notEqual(zone.margins.handover.checkin.z.higher, newMargin);
         });
     });
-    describe('.elements#add', function(){
+    describe('.elements#add', function() {
         it('should add elements to a zone', function() {
             var elements = { foo: { name: 'foo' } };
             zone.elements = elements;
@@ -152,7 +158,7 @@ describe('zonegrid', function() {
             assert.equal(zone.elements.bar.name, 'bar');
         });
     });
-    describe('.elements#remove', function(){
+    describe('.elements#remove', function() {
         it('should remove elements from a zone', function() {
             var elements = { foo: { name: 'foo' } };
             zone.elements = elements;
@@ -161,7 +167,7 @@ describe('zonegrid', function() {
             assert.equal(zone.elements.foo, undefined);
         });
     });
-    describe('.elements.position', function(){
+    describe('.elements.position', function() {
         it('should modify the position of an element', function() {
             zone.elements = {
                 foo: {
