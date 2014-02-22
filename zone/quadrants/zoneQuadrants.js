@@ -8,8 +8,7 @@ var BANDS = ['lower.scopeout', 'lower.checkin',  'lower.bookin',  'lower.scopein
  *@method {function} - 
  */
 module.exports = {
-    create: create,
-    which: which
+    create: create
 };
 
 /*----------------------------------------------------------------------------*/
@@ -18,7 +17,7 @@ module.exports = {
  * @param
  * @returns
  */
-function create(margins) {
+function create(globalNamespace, zoneEvents, margins) {
     var scopeout = margins.scope.outer,
         scopein = margins.scope.inner,
         bookin = margins.handover.bookin,
@@ -32,34 +31,34 @@ function create(margins) {
             scopein.z.higher, bookin.z.higher, checkin.z.higher, scopeout.z.higher]
     };
 
+    function which(coordinates, lastQuadrant) {
+        var quadrants = this,
+            x = BANDS[getCoordinateIndex('x', coordinates.x, quadrants, lastQuadrant || {})],
+            y = BANDS[getCoordinateIndex('y', coordinates.y, quadrants, lastQuadrant || {})],
+            z = BANDS[getCoordinateIndex('z', coordinates.z, quadrants, lastQuadrant || {})];
+
+        return [x, y, z];
+    }
+
+    function getCoordinateIndex(coordinate, value, quadrants, lastQuadrant) {
+        var start, end, length = quadrants.x.length;
+        if (lastQuadrant[coordinate]) {
+            start = Math.max(lastQuadrant[coordinate] - 1, 0);
+            end = Math.min(start + 2, length);
+        }
+        for (var i = start || 0; i < end || length; i++) {
+            if (value < quadrants[coordinate][i]) {
+                return i;
+            }
+        }
+        return length;
+    }
+
+    zoneEvents.on('/element/positionChange', function (change) {
+        console.log('positionChange');
+    });
+
     return {
         which: which.bind(quadrants)
     };
-}
-
-/** 
- * @param
- * @returns
- */
-function which(coordinates, lastQuadrant) {
-    var quadrants = this,
-        x = BANDS[getCoordinateIndex('x', coordinates.x, quadrants, lastQuadrant || {})],
-        y = BANDS[getCoordinateIndex('y', coordinates.y, quadrants, lastQuadrant || {})],
-        z = BANDS[getCoordinateIndex('z', coordinates.z, quadrants, lastQuadrant || {})];
-
-    return [x, y, z];
-}
-
-function getCoordinateIndex(coordinate, value, quadrants, lastQuadrant) {
-    var start, end, length = quadrants.x.length;
-    if (lastQuadrant[coordinate]) {
-        start = Math.max(lastQuadrant[coordinate] - 1, 0);
-        end = Math.min(start + 2, length);
-    }
-    for (var i = start || 0; i < end || length; i++) {
-        if (value < quadrants[coordinate][i]) {
-            return i;
-        }
-    }
-    return length;
 }
