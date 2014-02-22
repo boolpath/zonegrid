@@ -11,7 +11,7 @@ module.exports = {
  * @param
  * @returns
  */
-function createContainer(zoneNamespace) {
+function createContainer(elementEvents) {
     return (function createElementsContainer() {
         var elements = {},
             getMethods = function (container) {
@@ -34,7 +34,7 @@ function createContainer(zoneNamespace) {
                     Object.defineProperties(elements, getMethods(elements));
                     for (var key in elements) {
                         if (elements.hasOwnProperty(key)) {
-                            elements[key] = watchElement(elements[key], zoneNamespace);
+                            elements[key] = watchElement(elements[key], elementEvents);
                         }
                     }
                     return true;
@@ -65,7 +65,7 @@ function createContainer(zoneNamespace) {
                 configurable: true,
                 value: watchElement(element)
             });
-            zoneNamespace.emit('/element/add', elements[addWith]);
+            elementEvents.emit('/element/add', elements[addWith]);
         }
 
         return addWith;
@@ -77,7 +77,7 @@ function createContainer(zoneNamespace) {
             return false;
         } else { 
             delete elements[key];
-            zoneNamespace.emit('/element/remove', key);
+            elementEvents.emit('/element/remove', key);
             return true;
         }
     }
@@ -124,7 +124,7 @@ function createContainer(zoneNamespace) {
                 },
                 set: function (newValue) {
                     value = newValue;
-                    zoneNamespace.emit('/element/' + typeofChange + 'Change', {
+                    elementEvents.emit('/element/' + typeofChange + 'Change', {
                         element: element,
                         property: changedProperty, 
                         value: newValue
