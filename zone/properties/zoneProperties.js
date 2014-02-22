@@ -15,7 +15,8 @@ module.exports = {
  * @param
  * @returns
  */
-function define(properties, zoneNamespace) {
+function define(properties, globalNamespace, localNamespace) {
+    var propertiesEvents = localNamespace.emitter();
     function createZoneProperties() {
         var zoneProperties = {
             // ID of the zone
@@ -68,11 +69,11 @@ function define(properties, zoneNamespace) {
                     }
                 })
             },
-            elements: zoneElements.createContainer(zoneNamespace)
+            elements: zoneElements.createContainer(localNamespace.emitter())
         };
 
         zoneProperties.quadrants = {
-            value: zoneQuadrants.create(zoneProperties.margins.value)
+            value: zoneQuadrants.create(globalNamespace, localNamespace.emitter(), zoneProperties.margins.value)
         };
 
         return zoneProperties;
@@ -88,7 +89,7 @@ function define(properties, zoneNamespace) {
             },
             set: function (newValue) {
                 value = newValue;
-                zoneNamespace.emit(typeofChange + 'Change', {
+                propertiesEvents.emit(typeofChange + 'Change', {
                     property: propertyChanged,
                     value: newValue
                 });
@@ -107,7 +108,7 @@ function define(properties, zoneNamespace) {
                             },
                             set: function (newValue) {
                                 // value = newValue;
-                                zoneNamespace.emit(typeofChange + 'Change', {
+                                propertiesEvents.emit(typeofChange + 'Change', {
                                     property: propertyChanged,
                                     side: 'lower',
                                     value: newValue
@@ -122,7 +123,7 @@ function define(properties, zoneNamespace) {
                             },
                             set: function (newValue) {
                                 // value = newValue;
-                                zoneNamespace.emit(typeofChange + 'Change', {
+                                propertiesEvents.emit(typeofChange + 'Change', {
                                     property: propertyChanged,
                                     side: 'higher',
                                     value: newValue
