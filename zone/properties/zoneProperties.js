@@ -79,15 +79,17 @@ function define(properties, globalNamespace, localNamespace) {
             }
         };
         // Quadrant system derived from the zone's margins
-        var quadrants = zoneQuadrants.create(globalNamespace, localNamespace.emitter(), zoneProperties.margins.value);
+        var quadrants = zoneQuadrants.create(globalNamespace, localNamespace.emitter(), 
+                                             zoneProperties.margins.value);
         zoneProperties.quadrants = {
             value: quadrants
         };
         // Set of elements located in the zone
         zoneProperties.elements = zoneElements.createContainer(localNamespace.emitter(), quadrants);
         // Neighboring zones
+        var neighbors = zoneNeighbors.createRelationships(properties.neighbors);
         zoneProperties.neighbors = {
-            value: zoneNeighbors.createRelationships()
+            value: neighbors
         };
 
         return zoneProperties;
