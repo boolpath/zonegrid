@@ -51,6 +51,6 @@ function watchProperties(zone, properties) {
         // console.log('removeElement');
     });
     properties.on('/element/positionChange', function (change) {
-        console.log('positionChange');
+        // console.log('positionChange');
     });
 }
