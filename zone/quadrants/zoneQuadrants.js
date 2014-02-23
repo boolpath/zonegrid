@@ -31,13 +31,13 @@ function create(globalNamespace, zoneEvents, margins) {
             scopein.z.higher, bookin.z.higher, checkin.z.higher, scopeout.z.higher]
     };
 
-    function which(coordinates, lastQuadrant) {
-        var quadrants = this,
-            x = BANDS[getCoordinateIndex('x', coordinates.x, quadrants, lastQuadrant || {})],
-            y = BANDS[getCoordinateIndex('y', coordinates.y, quadrants, lastQuadrant || {})],
-            z = BANDS[getCoordinateIndex('z', coordinates.z, quadrants, lastQuadrant || {})];
-
-        return [x, y, z];
+    function whichQuadrant(coordinates, lastQuadrant) {
+        var quadrants = this;
+        return {
+            x: BANDS[getCoordinateIndex('x', coordinates.x, quadrants, lastQuadrant || {})],
+            y: BANDS[getCoordinateIndex('y', coordinates.y, quadrants, lastQuadrant || {})],
+            z: BANDS[getCoordinateIndex('z', coordinates.z, quadrants, lastQuadrant || {})]
+        }
     }
 
     function getCoordinateIndex(coordinate, value, quadrants, lastQuadrant) {
@@ -55,10 +55,20 @@ function create(globalNamespace, zoneEvents, margins) {
     }
 
     zoneEvents.on('/element/positionChange', function (change) {
+        var element = change.element,
+            lastQuadrant = element.quadrant,
+            quadrant = whichQuadrant.call(quadrants, element.position, lastQuadrant);
         console.log('positionChange');
+
+        if (!lastQuadrant || (lastQuadrant && (quadrant.x !== lastQuadrant.x 
+            || quadrant.y !== lastQuadrant.y || quadrant.z !== lastQuadrant.z))) {
+                console.log('   quadrantChange');
+                element.quadrant = quadrant;
+                globalNamespace.emit('/element/quadrantChange');
+        }
     });
 
     return {
-        which: which.bind(quadrants)
+        which: whichQuadrant.bind(quadrants)
     };
 }
