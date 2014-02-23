@@ -11,7 +11,7 @@ module.exports = {
  * @param
  * @returns
  */
-function createContainer(elementEvents) {
+function createContainer(zoneEvents, zoneQuadrants) {
     return (function createElementsContainer() {
         var elements = {},
             getMethods = function (container) {
@@ -34,7 +34,7 @@ function createContainer(elementEvents) {
                     Object.defineProperties(elements, getMethods(elements));
                     for (var key in elements) {
                         if (elements.hasOwnProperty(key)) {
-                            elements[key] = watchElement(elements[key], elementEvents);
+                            elements[key] = watchElement(elements[key]);
                         }
                     }
                     return true;
@@ -46,29 +46,29 @@ function createContainer(elementEvents) {
 
     function addElement(element, key) {
         var elements = this,
-            addWith,
+            elementKey,
             id = element.id,
             name = element.name;
 
         if (typeof key === 'string' && !elements[key]) {
-            addWith = key;
+            elementKey = key;
         } else if (typeof id === 'string' && !elements[id]) {
-            addWith = id;
+            elementKey = id;
         } else if (typeof name === 'string' && !elements[name]) {
-            addWith = name;
+            elementKey = name;
         }
 
-        if (addWith) {
-            Object.defineProperty(elements, addWith, {
+        if (elementKey) {
+            Object.defineProperty(elements, elementKey, {
                 enumerable: true,
                 writable: true,
                 configurable: true,
                 value: watchElement(element)
             });
-            elementEvents.emit('/element/add', elements[addWith]);
+            zoneEvents.emit('/elements/add', elements[elementKey]);
         }
 
-        return addWith;
+        return elementKey;
     }
 
     function removeElement(key) {
@@ -77,14 +77,15 @@ function createContainer(elementEvents) {
             return false;
         } else { 
             delete elements[key];
-            elementEvents.emit('/element/remove', key);
+            zoneEvents.emit('/element/remove', key);
             return true;
         }
     }
 
-    function watchElement(element, emitter) {
+    function watchElement(element) {
         var watchedElement,
-            position;
+            position,
+            quadrant;
 
         // Position
         if (typeof element.position === 'object') {
@@ -102,12 +103,15 @@ function createContainer(elementEvents) {
             y: changeGetterSetter('position', 'y', position.y).call(element),
             z: changeGetterSetter('position', 'z', position.z).call(element)
         });
+        quadrant = zoneQuadrants.which(position);
         try {
             Object.defineProperty(element, 'position', { value: position });
+            Object.defineProperty(element, 'quadrant', { value: quadrant });
             watchedElement = element;
         } catch (e) {
             watchedElement = Object.create(element);
             Object.defineProperty(watchedElement, 'position', position);
+            Object.defineProperty(element, 'quadrant', { value: quadrant });
         }
 
         return watchedElement;
@@ -124,7 +128,7 @@ function createContainer(elementEvents) {
                 },
                 set: function (newValue) {
                     value = newValue;
-                    elementEvents.emit('/element/' + typeofChange + 'Change', {
+                    zoneEvents.emit('/element/' + typeofChange + 'Change', {
                         element: element,
                         property: changedProperty, 
                         value: newValue
