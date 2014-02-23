@@ -17,7 +17,8 @@ module.exports = {
  */
 function define(properties, globalNamespace, localNamespace) {
     var propertiesEvents = localNamespace.emitter();
-    function createZoneProperties() {
+
+    return (function createZoneProperties() {
         var zoneProperties = {
             // ID of the zone
             id: {
@@ -68,16 +69,18 @@ function define(properties, globalNamespace, localNamespace) {
                         })
                     }
                 })
-            },
-            elements: zoneElements.createContainer(localNamespace.emitter())
+            }
         };
 
+        var quadrants = zoneQuadrants.create(globalNamespace, localNamespace.emitter(), zoneProperties.margins.value);
         zoneProperties.quadrants = {
-            value: zoneQuadrants.create(globalNamespace, localNamespace.emitter(), zoneProperties.margins.value)
+            value: quadrants
         };
+
+        zoneProperties.elements = zoneElements.createContainer(localNamespace.emitter(), quadrants);
 
         return zoneProperties;
-    }
+    })();
 
     /*----------------------------------------------------------------------------*/
 
@@ -144,6 +147,4 @@ function define(properties, globalNamespace, localNamespace) {
     } 
 
     /*----------------------------------------------------------------------------*/
-
-    return createZoneProperties();
 }
