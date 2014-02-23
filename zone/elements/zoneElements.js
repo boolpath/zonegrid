@@ -34,7 +34,7 @@ function createContainer(zoneEvents, zoneQuadrants) {
                     Object.defineProperties(elements, getMethods(elements));
                     for (var key in elements) {
                         if (elements.hasOwnProperty(key)) {
-                            elements[key] = watchElement(elements[key]);
+                            elements[key] = watchElement(elements[key], key);
                         }
                     }
                     return true;
@@ -63,7 +63,7 @@ function createContainer(zoneEvents, zoneQuadrants) {
                 enumerable: true,
                 writable: true,
                 configurable: true,
-                value: watchElement(element)
+                value: watchElement(element, elementKey)
             });
             zoneEvents.emit('/elements/add', elements[elementKey]);
         }
@@ -82,7 +82,7 @@ function createContainer(zoneEvents, zoneQuadrants) {
         }
     }
 
-    function watchElement(element) {
+    function watchElement(element, key) {
         var watchedElement,
             position,
             quadrant;
@@ -105,13 +105,15 @@ function createContainer(zoneEvents, zoneQuadrants) {
         });
         quadrant = zoneQuadrants.which(position);
         try {
+            Object.defineProperty(element, 'key', { value: key });
             Object.defineProperty(element, 'position', { value: position });
             Object.defineProperty(element, 'quadrant', { value: quadrant });
             watchedElement = element;
         } catch (e) {
             watchedElement = Object.create(element);
-            Object.defineProperty(watchedElement, 'position', position);
-            Object.defineProperty(element, 'quadrant', { value: quadrant });
+            Object.defineProperty(watchedElement, 'key', { value: key });
+            Object.defineProperty(watchedElement, 'position', { value: position });
+            Object.defineProperty(watchedElement, 'quadrant', { value: quadrant });
         }
 
         return watchedElement;
