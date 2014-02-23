@@ -58,11 +58,11 @@ function create(globalNamespace, zoneEvents, margins) {
         var element = change.element,
             lastQuadrant = element.quadrant,
             quadrant = whichQuadrant.call(quadrants, element.position, lastQuadrant);
-        console.log('positionChange');
+        // console.log('positionChange');
 
         if (!lastQuadrant || (lastQuadrant && (quadrant.x !== lastQuadrant.x 
             || quadrant.y !== lastQuadrant.y || quadrant.z !== lastQuadrant.z))) {
-                console.log('   quadrantChange');
+                // console.log('   quadrantChange');
                 element.quadrant = quadrant;
                 globalNamespace.emit('/element/quadrantChange');
         }

@@ -1,6 +1,7 @@
 /* NODE MODULES */
 var zoneElements = require('../elements'),
-    zoneQuadrants = require('../quadrants');
+    zoneQuadrants = require('../quadrants'),
+    zoneNeighbors = require('../neighbors');
 
 /** MODULE INTERFACE
  *@method {function} define - Defines the properties of a zone and attaches event emitters monitor their changes
@@ -84,6 +85,10 @@ function define(properties, globalNamespace, localNamespace) {
         };
         // Set of elements located in the zone
         zoneProperties.elements = zoneElements.createContainer(localNamespace.emitter(), quadrants);
+        // Neighboring zones
+        zoneProperties.neighbors = {
+            value: zoneNeighbors.createRelationships()
+        };
 
         return zoneProperties;
     })();
