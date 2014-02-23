@@ -1,7 +1,6 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
     zone = require('./zone'),
-    grid = require('./grid')
     defaults = require('./defaults');
 
 /** LOCAL OBJECT 
