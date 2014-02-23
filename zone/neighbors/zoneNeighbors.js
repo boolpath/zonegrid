@@ -12,19 +12,19 @@ module.exports = {
  * @returns {object} neighborRelationships - 
  */
 function createRelationships(neighbors) {
-    var x = {}, y = {}, z = {};
+    var x = {}, y = {}, z = {}, defaultNeighbor = undefined;
 
-    if (neighbors) {
-        x.lower  = (typeof neighbors.x === 'object') ? neighbors.x.lower  : undefined;
-        x.higher = (typeof neighbors.x === 'object') ? neighbors.x.higher : undefined;
-        y.lower  = (typeof neighbors.y === 'object') ? neighbors.z.lower  : undefined;
-        y.higher = (typeof neighbors.y === 'object') ? neighbors.y.higher : undefined;
-        z.lower  = (typeof neighbors.z === 'object') ? neighbors.z.lower  : undefined;
-        z.higher = (typeof neighbors.z === 'object') ? neighbors.z.higher : undefined;
+    if (typeof neighbors === 'object') {
+        x.lower  = (typeof neighbors.x === 'object') ? neighbors.x.lower  : defaultNeighbor;
+        x.higher = (typeof neighbors.x === 'object') ? neighbors.x.higher : defaultNeighbor;
+        y.lower  = (typeof neighbors.y === 'object') ? neighbors.z.lower  : defaultNeighbor;
+        y.higher = (typeof neighbors.y === 'object') ? neighbors.y.higher : defaultNeighbor;
+        z.lower  = (typeof neighbors.z === 'object') ? neighbors.z.lower  : defaultNeighbor;
+        z.higher = (typeof neighbors.z === 'object') ? neighbors.z.higher : defaultNeighbor;
     } else {
-        x.lower = x.higher = undefined;
-        y.higher = y.lower = undefined;
-        z.higher = z.lower = undefined;
+        x.lower = x.higher = defaultNeighbor;
+        y.higher = y.lower = defaultNeighbor;
+        z.higher = z.lower = defaultNeighbor;
     }
 
     function createNeighbor(value) {
