@@ -1,5 +1,6 @@
 /* NODE MODULES */
-var eventerface = require('eventerface');
+var eventerface = require('eventerface'),
+    jamp = require('./jamp');
 
 /** LOCAL OBJECT 
  * @property {} - 
@@ -32,7 +33,8 @@ function createZoneServer(zone, globalNamespace) {
             console.log('   quadrantChange', change.quadrant);
         });
         zoneNamespace.on('/zone/neighborChange', function(change) {
-            console.log('   neighborChange', change.neighbor, change.value);
+            console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
+            jamp.createChannel(zone, zoneNamespace, change.value.local, change.value.remote);
         });
     });
 
