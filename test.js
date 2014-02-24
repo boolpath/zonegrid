@@ -76,8 +76,15 @@ describe('zonegrid', function() {
             assert.equal(zone.visibility.y, 200);
             assert.equal(zone.visibility.z, 300);
 
-            assert.equal(zone.margins.scope.inner.x.lower - zone.limits.x.lower, zone.visibility.x);
-            assert.equal(zone.limits.y.higher - zone.margins.scope.inner.y.higher, zone.visibility.y);
+            assert.equal(zone.margins.scope.inner.x.lower  - zone.limits.x.lower,   zone.visibility.x);
+            assert.equal(zone.margins.scope.inner.x.higher - zone.limits.x.higher, -zone.visibility.x);
+            assert.equal(zone.margins.scope.outer.x.lower  - zone.limits.x.lower,  -zone.visibility.x);
+            assert.equal(zone.margins.scope.outer.x.higher - zone.limits.x.higher,  zone.visibility.x);
+
+            assert.equal(zone.margins.scope.inner.y.lower  - zone.limits.y.lower,   zone.visibility.y);
+            assert.equal(zone.margins.scope.inner.y.higher - zone.limits.y.higher, -zone.visibility.y);
+            assert.equal(zone.margins.scope.outer.y.lower  - zone.limits.y.lower,  -zone.visibility.y);
+            assert.equal(zone.margins.scope.outer.y.higher - zone.limits.y.higher,  zone.visibility.y);
         });
     });
     describe('.handover', function() {
@@ -85,9 +92,19 @@ describe('zonegrid', function() {
             zone.handover = 10;
             assert.equal(zone.handover, 10);
 
-            assert.equal(zone.margins.handover.bookin.x.lower,   zone.limits.x.lower  + zone.handover);
+            assert.equal(zone.margins.handover.bookin.x.lower,  zone.limits.x.lower  + zone.handover);
+            assert.equal(zone.margins.handover.bookin.x.higher, zone.limits.x.higher - zone.handover);
+            assert.equal(zone.margins.handover.bookin.y.lower,  zone.limits.y.lower  + zone.handover);
+            assert.equal(zone.margins.handover.bookin.y.higher, zone.limits.y.higher - zone.handover);
+            assert.equal(zone.margins.handover.bookin.z.lower,  zone.limits.z.lower  + zone.handover);
+            assert.equal(zone.margins.handover.bookin.z.higher, zone.limits.z.higher - zone.handover);
+
+            assert.equal(zone.margins.handover.checkin.x.lower,  zone.limits.x.lower  - zone.handover);
+            assert.equal(zone.margins.handover.checkin.x.higher, zone.limits.x.higher + zone.handover);
+            assert.equal(zone.margins.handover.checkin.y.lower,  zone.limits.y.lower  - zone.handover);
             assert.equal(zone.margins.handover.checkin.y.higher, zone.limits.y.higher + zone.handover);
-            assert.equal(zone.margins.handover.bookin.z.lower,   zone.limits.z.lower  + zone.handover);
+            assert.equal(zone.margins.handover.checkin.z.lower,  zone.limits.z.lower  - zone.handover);
+            assert.equal(zone.margins.handover.checkin.z.higher, zone.limits.z.higher + zone.handover);
         });
     });
     // describe('.margins.scope.inner', function() {
