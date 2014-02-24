@@ -51,12 +51,20 @@ describe('zonegrid', function() {
     // });
     describe('.coordinates', function() {
         it('should ]set the coordinates of a zone', function() {
+            var higherX = zone.limits.x.higher;
+            var higherY = zone.limits.y.higher;
+            var higherZ = zone.limits.z.higher;
+
             zone.coordinates.x = 100;
             zone.coordinates.y = 200;
             zone.coordinates.z = 300;
             assert.equal(zone.coordinates.x, 100);
             assert.equal(zone.coordinates.y, 200);
             assert.equal(zone.coordinates.z, 300);
+
+            assert.equal(zone.limits.x.higher, higherX + 100);  
+            assert.equal(zone.limits.y.higher, higherY + 200);  
+            assert.equal(zone.limits.z.higher, higherZ + 300);  
         });
     });
     describe('.visibility', function() {
