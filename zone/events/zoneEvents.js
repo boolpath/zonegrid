@@ -56,6 +56,17 @@ function watchProperties(zone, properties) {
     });
     properties.on('handoverChange', function (change) {
         // console.log('handoverChange');
+        var handover = change.value;
+
+        ['x', 'y', 'z'].forEach(function (property) {
+            lowerLimit = zone.limits[property].lower;
+            higherLimit = zone.limits[property].higher;
+
+            zone.margins.handover.bookin[property].lower   = lowerLimit  + handover;
+            zone.margins.handover.bookin[property].higher  = higherLimit - handover;
+            zone.margins.handover.checkin[property].lower  = lowerLimit  - handover;
+            zone.margins.handover.checkin[property].higher = higherLimit + handover;
+        });
     });
     properties.on('innerScopeChange', function (change) {
         // console.log('innerScopeChange');
