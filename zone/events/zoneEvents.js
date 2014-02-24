@@ -91,4 +91,8 @@ function watchProperties(zone, properties) {
     properties.on('/element/positionChange', function (change) {
         // console.log('positionChange');
     });
+
+    properties.on('neighborChange', function (change) {
+        console.log('neighborChange', change.property, change.value);
+    });
 }
