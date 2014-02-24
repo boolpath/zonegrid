@@ -22,7 +22,23 @@ function watchProperties(zone, properties) {
         // console.log('limitsChange');
     });
     properties.on('coordinatesChange', function (change) {
-        // console.log('coordinatesChange');
+        var property = change.property,
+            value = change.value,
+            lowerLimit, higherLimit;
+
+        lowerLimit = zone.limits[property].lower += value;
+        higherLimit = zone.limits[property].higher += value;
+        
+        zone.margins.scope.inner[property].lower  = lowerLimit  + zone.visibility[property];
+        zone.margins.scope.inner[property].higher = higherLimit - zone.visibility[property];
+        zone.margins.scope.outer[property].lower  = lowerLimit  - zone.visibility[property];
+        zone.margins.scope.outer[property].higher = higherLimit + zone.visibility[property];
+
+        zone.margins.handover.bookin[property].lower   = lowerLimit  + zone.handover;
+        zone.margins.handover.bookin[property].higher  = higherLimit - zone.handover;
+        zone.margins.handover.checkin[property].lower  = lowerLimit  - zone.handover;
+        zone.margins.handover.checkin[property].higher = higherLimit + zone.handover;
+
     });
     properties.on('visibilityChange', function (change) {
         // console.log('visibilityChange');
