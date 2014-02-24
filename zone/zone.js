@@ -43,7 +43,7 @@ function create(properties) {
     eventerface.find(globalNamespace, function (globalNamespace) {
         properties = zoneProperties.define(properties, globalNamespace, localNamespace);
         Object.defineProperties(zone, properties);
-        zoneEvents.watchProperties(zone, localNamespace.emitter());
+        zoneEvents.watchProperties(zone, globalNamespace, localNamespace.emitter());
         zone.moduleapi.emit('ready');
     });
 
