@@ -131,6 +131,7 @@ function defaultZoneProperties() {
             'xl-ym-zm': null,
             'xl-yh-zm': null,
             'xm-yl-zm': null,
+            // 'xm-ym-zm': not included because it is the zone itself
             'xm-yh-zm': null,
             'xh-yl-zm': null,
             'xh-ym-zm': null,
