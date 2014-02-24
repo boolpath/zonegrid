@@ -114,6 +114,37 @@ function defaultZoneProperties() {
                     }
                 }
             }
+        },
+        neighbors: {
+            // XY plane, lower Z
+            'xl-yl-zl': null,
+            'xl-ym-zl': null,
+            'xl-yh-zl': null,
+            'xm-yl-zl': null,
+            'xm-ym-zl': null,
+            'xm-yh-zl': null,
+            'xh-yl-zl': null,
+            'xh-ym-zl': null,
+            'xh-yh-zl': null,
+            // XY plane, middle Z
+            'xl-yl-zm': null,
+            'xl-ym-zm': null,
+            'xl-yh-zm': null,
+            'xm-yl-zm': null,
+            'xm-yh-zm': null,
+            'xh-yl-zm': null,
+            'xh-ym-zm': null,
+            'xh-yh-zm': null,
+            // XY plane, higher Z
+            'xl-yl-zh': null,
+            'xl-ym-zh': null,
+            'xl-yh-zh': null,
+            'xm-yl-zh': null,
+            'xm-ym-zh': null,
+            'xm-yh-zh': null,
+            'xh-yl-zh': null,
+            'xh-ym-zh': null,
+            'xh-yh-zh': null,
         }
     }
 }
