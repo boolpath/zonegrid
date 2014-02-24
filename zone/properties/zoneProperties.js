@@ -87,10 +87,40 @@ function define(properties, globalNamespace, localNamespace) {
         };
         // Set of elements located in the zone
         zoneProperties.elements = zoneElements.createContainer(localNamespace.emitter(), quadrants);
+        
         // Neighboring zones
-        var neighbors = zoneNeighbors.createRelationships(properties.neighbors);
+        var neighbors = Object.create({}, zoneNeighbors.createRelationships(properties.neighbors, changeGetterSetter));
         zoneProperties.neighbors = {
-            value: neighbors
+            value: function () {
+                var neighborLocation = Array.prototype.slice.call(arguments).sort();
+                neighborLocation = neighborLocation.join('-');
+                neighborLocation = neighborLocation.replace(new RegExp('lower', 'g'), 'l');
+                neighborLocation = neighborLocation.replace(new RegExp('middle', 'g'), 'm');
+                neighborLocation = neighborLocation.replace(new RegExp('higher', 'g'), 'h');
+                neighborLocation = neighborLocation.replace(/\./g, '');
+                neighborLocation = neighborLocation.split('-');
+
+                var axes = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                };
+                for (var index in neighborLocation) {
+                    var segment = neighborLocation[index];
+                    for (var axis in axes) {
+                        if (segment[0] === axis) {
+                            axes[axis] += 1;
+                        }
+                    }
+                }
+                for (var axis in axes) {
+                    if (axes[axis] === 0) {
+                        neighborLocation.push(axis + 'm');
+                    }
+                }
+                neighborLocation = neighborLocation.sort().join('-');
+                return neighbors[neighborLocation];
+            }
         };
 
         return zoneProperties;
@@ -108,7 +138,7 @@ function define(properties, globalNamespace, localNamespace) {
         var value = initialValue;
         return {
             get: function () {
-                return value;
+                return value; 
             },
             set: function (newValue) {
                 value = newValue;
