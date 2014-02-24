@@ -52,8 +52,9 @@ function define(properties, globalNamespace, localNamespace) {
             // Maximum range of visibility
             visibility: {
                 value: Object.create({}, {
-                    horizontal: changeGetterSetter('visibility', 'horizontal', properties.visibility.horizontal),
-                    vertical: changeGetterSetter('visibility', 'vertical', properties.visibility.vertical)
+                    x: changeGetterSetter('visibility', 'x', properties.visibility.x),
+                    y: changeGetterSetter('visibility', 'y', properties.visibility.y),
+                    z: changeGetterSetter('visibility', 'z', properties.visibility.z)
                 })
             },
             // Bookin and checkin margin size
@@ -144,7 +145,7 @@ function define(properties, globalNamespace, localNamespace) {
                                 return value;
                             },
                             set: function (newValue) {
-                                // value = newValue;
+                                value = newValue;
                                 emitMarginEvent(propertyChanged, 'lower', newValue);
                             }
                         };
@@ -156,7 +157,7 @@ function define(properties, globalNamespace, localNamespace) {
                                 return value;
                             },
                             set: function (newValue) {
-                                // value = newValue;
+                                value = newValue;
                                 emitMarginEvent(propertyChanged, 'higher', newValue);
                             }
                         };

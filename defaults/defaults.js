@@ -48,8 +48,9 @@ function defaultZoneProperties() {
             z: 0
         },
         visibility: {
-            horizontal: 100,
-            vertical: 100
+            x: 100,
+            y: 100,
+            z: 100
         },
         handover: 50,
         margins: {
