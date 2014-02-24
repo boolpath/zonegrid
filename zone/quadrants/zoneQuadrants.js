@@ -1,11 +1,9 @@
-/** LOCAL OBJECT 
- * @property {} - 
- */
+// Zonegrid's quadrant system is built from splitting each coordinate axis into 9 bands: 
 var BANDS = ['lower.scopeout', 'lower.checkin',  'lower.bookin',  'lower.scopein', 'zone',
              'higher.scopein', 'higher.bookin', 'higher.checkin', 'higher.scopeout'];
 
 /** MODULE INTERFACE
- *@method {function} - 
+ *@method {function} create - Creates a quadrants system based on the visibility and handover margins
  */
 module.exports = {
     create: create
@@ -13,15 +11,20 @@ module.exports = {
 
 /*----------------------------------------------------------------------------*/
 
-/** 
- * @param
- * @returns
+/** Creates a quadrants system based on the visibility and handover margins
+ * @param {object} globalNamespace - The namespace where the module events are emitted
+ * @param {object} zoneEvents - The emitter that emits events on changes to position elements
+ * @param {object} margins - Describes the scope and handover margins of the zone
+ * @returns {object} - An object containing a #which method that returns the quadrant of a coordinate
  */
 function create(globalNamespace, zoneEvents, margins) {
     var scopeout = margins.scope.outer,
         scopein = margins.scope.inner,
         bookin = margins.handover.bookin,
         checkin = margins.handover.checkin;
+
+    // Create an object with arrays for each coordinate and
+    // fill them with the limits of the visibility and handover margins
     var quadrants = {
         x: [scopeout.x.lower, checkin.x.lower,  bookin.x.lower,  scopein.x.lower, 
             scopein.x.higher, bookin.x.higher, checkin.x.higher, scopeout.x.higher],
@@ -31,6 +34,11 @@ function create(globalNamespace, zoneEvents, margins) {
             scopein.z.higher, bookin.z.higher, checkin.z.higher, scopeout.z.higher]
     };
 
+    /** Returns the band where each coordinate axis falls in
+     * @param {object} coordinates - 
+     * @param {object} lastQuadrant - 
+     * @returns {object} - An object with x, y and z properties indicating the band of each coordinate 
+     */
     function whichQuadrant(coordinates, lastQuadrant) {
         var quadrants = this;
         return {
@@ -40,6 +48,13 @@ function create(globalNamespace, zoneEvents, margins) {
         }
     }
 
+    /** Maps a coordinate to an index value of the BANDS array
+     * @param {string} coordinate - The coordinate whose index is going to be found 
+     * @param {number} value - The value of the coordinate
+     * @param {object} quadrants - The object containing the quadrant limits
+     * @param {object} lastQuadrant - The last quadrant where the coordinate fell
+     * @returns {number} - The index of the band where a coordinate falls in
+     */
     function getCoordinateIndex(coordinate, value, quadrants, lastQuadrant) {
         var start, end, length = quadrants.x.length;
         if (lastQuadrant[coordinate]) {
@@ -54,17 +69,22 @@ function create(globalNamespace, zoneEvents, margins) {
         return length;
     }
 
+    // Handle events emitted on changes to the positions of elements
     zoneEvents.on('/element/positionChange', function (change) {
         var element = change.element,
             lastQuadrant = element.quadrant,
             quadrant = whichQuadrant.call(quadrants, element.position, lastQuadrant);
-        // console.log('positionChange');
 
         if (!lastQuadrant || (lastQuadrant && (quadrant.x !== lastQuadrant.x 
             || quadrant.y !== lastQuadrant.y || quadrant.z !== lastQuadrant.z))) {
-                // console.log('   quadrantChange');
-                element.quadrant = quadrant;
-                globalNamespace.emit('/element/quadrantChange');
+                element.quadrant.x = quadrant.x; 
+                element.quadrant.y = quadrant.y; 
+                element.quadrant.z = quadrant.z; 
+                console.log(element.quadrant);
+                globalNamespace.emit('/elements/quadrantChange', {
+                    key: element.key,
+                    quadrant: quadrant
+                });
         }
     });
 
