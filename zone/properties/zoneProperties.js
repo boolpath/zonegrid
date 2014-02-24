@@ -87,9 +87,9 @@ function define(properties, globalNamespace, localNamespace) {
         };
         // Set of elements located in the zone
         zoneProperties.elements = zoneElements.createContainer(localNamespace.emitter(), quadrants);
-        
+
         // Neighboring zones
-        var neighbors = Object.create({}, zoneNeighbors.createRelationships(properties.neighbors, changeGetterSetter));
+        zoneProperties._neighbors = Object.create({}, zoneNeighbors.createRelationships(properties.neighbors, changeGetterSetter));
         zoneProperties.neighbors = {
             value: function () {
                 var neighborLocation = Array.prototype.slice.call(arguments).sort();
@@ -119,7 +119,7 @@ function define(properties, globalNamespace, localNamespace) {
                     }
                 }
                 neighborLocation = neighborLocation.sort().join('-');
-                return neighbors[neighborLocation];
+                return zoneProperties._neighbors[neighborLocation];
             }
         };
 
