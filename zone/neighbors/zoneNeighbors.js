@@ -14,7 +14,7 @@ module.exports = {
  */
 function createRelationships(neighbors, changeGetterSetter) {
     function createNeighbor(location) {
-        var neighbor = neighbors[location] || { port: 0 };
+        var neighbor = neighbors[location] || null;
         neighbor = changeGetterSetter('neighbor', location, neighbor);
         // return neighbor;
         return {
