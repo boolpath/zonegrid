@@ -10,7 +10,7 @@ module.exports = {
 /** Listen to events emitted on changes to the properties of a zone
  * @param {object} properties - Event emitter fired when zone properties are changed
  */
-function watchProperties(zone, properties) {
+function watchProperties(zone, globalNamespace, properties) {
     // Zone properties
     properties.on('nameChange', function (name) {
         // console.log('nameChange');
@@ -93,6 +93,9 @@ function watchProperties(zone, properties) {
     });
 
     properties.on('neighborChange', function (change) {
-        console.log('neighborChange', change.property, change.value);
+        globalNamespace.emit('/zone/neighborChange', {
+            neighbor: change.property,
+            value: change.value
+        });
     });
 }

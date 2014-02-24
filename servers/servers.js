@@ -31,6 +31,9 @@ function createZoneServer(zone, globalNamespace) {
         zoneNamespace.on('/elements/quadrantChange', function(change) {
             console.log('   quadrantChange', change.quadrant);
         });
+        zoneNamespace.on('/zone/neighborChange', function(change) {
+            console.log('   neighborChange', change.neighbor, change.value);
+        });
     });
 
     return servers;
