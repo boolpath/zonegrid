@@ -26,7 +26,7 @@ module.exports = {
 function setup(zone, globalNamespace) {
     var servers = {
         start: start.bind(null, zone, globalNamespace),
-        create: {
+        setup: {
             jampServer: jamp.setup.bind(null, zone, globalNamespace)
         }
     };

@@ -35,10 +35,10 @@ function create(properties) {
 
     // Configure the JAMP server that will be used by the zone
     if (typeof properties.servers === 'object' && !properties.servers.jamp) {
-        properties.servers.jamp = zoneServers.create.jampServer();
+        properties.servers.jamp = zoneServers.setup.jampServer();
     } else {
         properties.servers = {
-            jamp: zoneServers.create.jampServer()
+            jamp: zoneServers.setup.jampServer()
         };
     }
 
