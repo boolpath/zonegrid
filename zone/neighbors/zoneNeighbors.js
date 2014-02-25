@@ -29,6 +29,9 @@ function createRelationships(neighbors, changeGetterSetter) {
                 bookin: {
                     value: {}
                 },
+                checkin: {
+                    value: {}
+                },
                 emit: {
                     writable: true,
                     value: function () {}
