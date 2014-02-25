@@ -8,12 +8,12 @@ var eventerface = require('eventerface'),
  *@method {function} - 
  */
 module.exports = {
-    createServer: createServer
+    setup: setup
 };
 
 /*----------------------------------------------------------------------------*/
 
-function createServer(zone, globalNamespace) { 
+function setup(zone, globalNamespace) { 
     var jamp = {
         handleCrossings: jampCrossings.handle.bind(null, zone),
         createBorder: jampBorders.create.bind(null, zone, globalNamespace)

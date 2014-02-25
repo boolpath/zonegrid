@@ -25,20 +25,21 @@ module.exports = {
  */
 function setup(zone, globalNamespace) {
     var servers = {
-        start: start,
+        start: start.bind(null, zone, globalNamespace),
         create: {
-            jampServer: jamp.createServer.bind(null, zone, globalNamespace)
+            jampServer: jamp.setup.bind(null, zone, globalNamespace)
         }
     };
 
-    /** Starts the servers of a given zone
-     * @param {function} onStarted - Starts the servers of a zone
-     */
-    function start(onStarted) {
-        if (typeof onStarted == 'function') {
-            onStarted();
-        }
-    }
-
     return servers;
+}
+
+/** Starts the servers of a given zone
+ * @param {function} onStarted - Starts the servers of a zone
+ */
+function start(zone, globalNamespace, onStarted) {
+
+    if (typeof onStarted == 'function') {
+        onStarted();
+    }
 }
