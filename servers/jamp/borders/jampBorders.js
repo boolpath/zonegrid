@@ -10,7 +10,7 @@ module.exports = {
 
 /*----------------------------------------------------------------------------*/
 
-/** Creates a channel between the zone and a neighboring zone
+/** Creates a border between the zone and a neighboring zone
  * @param {object} zone - The zone requesting the servers to be created
  * @param {object} globalNamespace - The global namespace where the other zone components will emit events
  * @param {object} side - The side of the zone where the channel will be created
