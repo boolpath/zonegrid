@@ -98,4 +98,10 @@ function watchProperties(zone, globalNamespace, properties) {
             value: change.value
         });
     });
+
+    properties.on('serverChange', function (change) {
+        globalNamespace.emit('/zone/serverChange/' + change.property, {
+            value: change.value
+        });
+    });
 }
