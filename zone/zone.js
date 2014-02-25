@@ -23,7 +23,8 @@ function create(properties) {
         globalNamespace = 'zone_' + properties.id,
         apiNamespace = eventerface.create(),
         apiEmitter = apiNamespace.emitter(),
-        localNamespace = eventerface.create();
+        localNamespace = eventerface.create(),
+        zoneServers = servers.setup(zone, globalNamespace);
 
     // Create event emitters in the same namespace to communicate with the module user
     Object.defineProperties(zone, {
@@ -34,10 +35,10 @@ function create(properties) {
 
     // Configure the JAMP server that will be used by the zone
     if (typeof properties.servers === 'object' && !properties.servers.jamp) {
-        properties.servers.jamp = servers.create.jampServer(zone, globalNamespace);
+        properties.servers.jamp = zoneServers.create.jampServer();
     } else {
         properties.servers = {
-            jamp: servers.create.jampServer(zone, globalNamespace)
+            jamp: zoneServers.create.jampServer()
         };
     }
 
@@ -46,7 +47,7 @@ function create(properties) {
         properties = zoneProperties.define(properties, globalNamespace, localNamespace);
         Object.defineProperties(zone, properties);
         zoneEvents.watchProperties(zone, globalNamespace, localNamespace.emitter());
-        servers.start(zone, function () {
+        zoneServers.start(function () {
             zone.moduleapi.emit('ready');
         });
     });
