@@ -13,10 +13,7 @@ var SERVERS = {
  *@method {function} - 
  */
 module.exports = {
-    create: {
-        jampServer: createJampServer
-    },
-    start: start
+    setup: setup
 }; 
 
 /*----------------------------------------------------------------------------*/
@@ -26,28 +23,22 @@ module.exports = {
  * @param {object} globalNamespace - The name of the global namespace where the other zone components will emit events
  * @returns {object} servers - A set of the zone's servers
  */
-function createJampServer(zone, globalNamespace) {
-    var servers;
+function setup(zone, globalNamespace) {
+    var servers = {
+        start: start,
+        create: {
+            jampServer: jamp.createServer.bind(null, zone, globalNamespace)
+        }
+    };
 
-    eventerface.find(globalNamespace, function (zoneNamespace) {
-        zoneNamespace.on('/elements/quadrantChange', function(change) {
-            // console.log('   quadrantChange', change.quadrant);
-            jamp.handleQuadrantChange(zone, change);
-        });
-        zoneNamespace.on('/zone/neighborChange', function(change) {
-            // console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
-            jamp.createChannel(zone, zoneNamespace, change.neighbor, change.value);
-        });
-    });
+    /** Starts the servers of a given zone
+     * @param {function} onStarted - Starts the servers of a zone
+     */
+    function start(onStarted) {
+        if (typeof onStarted == 'function') {
+            onStarted();
+        }
+    }
 
     return servers;
-}
-
-/** Starts the servers of a given zone
- * @param {object} zone - The zone whose servers will be started
- */
-function start(zone, onStarted) {
-    if (typeof onStarted == 'function') {
-        onStarted();
-    }
 }

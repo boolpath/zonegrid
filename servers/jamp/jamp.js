@@ -5,11 +5,32 @@ var eventerface = require('eventerface');
  *@method {function} - 
  */
 module.exports = {
+    createServer: createServer,
     createChannel: createChannel,
     handleQuadrantChange: handleQuadrantChange
 };
 
 /*----------------------------------------------------------------------------*/
+
+function createServer(zone, globalNamespace) {
+    var jamp = {
+        handleQuadrantChange: handleQuadrantChange,
+        createChannel: createChannel
+    };
+
+    eventerface.find(globalNamespace, function (zoneNamespace) {
+        zoneNamespace.on('/elements/quadrantChange', function(change) {
+            // console.log('   quadrantChange', change.quadrant);
+            jamp.handleQuadrantChange(zone, change);
+        });
+        zoneNamespace.on('/zone/neighborChange', function(change) {
+            // console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
+            jamp.createChannel(zone, zoneNamespace, change.neighbor, change.value);
+        });
+    });
+
+    return jamp;
+}
 
 /** Creates a channel between the zone and a neighboring zone
  * @param {object} zone - The zone requesting the servers to be created
