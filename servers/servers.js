@@ -14,7 +14,7 @@ var SERVERS = {
  */
 module.exports = {
     create: {
-        zoneServer: createZoneServer
+        jampServer: createJampServer
     }
 }; 
 
@@ -25,7 +25,7 @@ module.exports = {
  * @param {object} globalNamespace - The name of the global namespace where the other zone components will emit events
  * @returns {object} servers - A set of the zone's servers
  */
-function createZoneServer(zone, globalNamespace) {
+function createJampServer(zone, globalNamespace) {
     var servers;
 
     eventerface.find(globalNamespace, function (zoneNamespace) {

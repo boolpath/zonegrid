@@ -32,12 +32,14 @@ function create(properties) {
         emit:   { value: apiEmitter.emit }
     });
 
-    // Configure the servers that will be used by the zone
-    Object.defineProperties(zone, {
-        servers: {
-            value: servers.create.zoneServer(zone, globalNamespace)
-        }
-    });
+    // Configure the JAMP server that will be used by the zone
+    if (typeof properties.servers === 'object' && !properties.servers.jamp) {
+        properties.servers.jamp = servers.create.jampServer(zone, globalNamespace);
+    } else {
+        properties.servers = {
+            jamp: servers.create.jampServer(zone, globalNamespace)
+        };
+    }
 
     // Join the created zone namespace and define the properties of the zone object
     eventerface.find(globalNamespace, function (globalNamespace) {
