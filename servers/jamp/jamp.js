@@ -63,7 +63,7 @@ function handleQuadrantChange(zone, change) {
 
         ['x', 'y', 'z'].forEach(function (coordinate) {
             var jampMargin = margins[coordinate];
-            if (jampMargin && !neighbor[jampMargin][elementKey]) {
+            if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
                 var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey];
                 console.log('   ', coordinate, jampMargin, neighbor.side);
                 neighbor.emit(jampMargin, element.name)
