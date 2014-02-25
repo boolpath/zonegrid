@@ -126,6 +126,18 @@ function define(properties, globalNamespace, localNamespace) {
             }
         };
 
+        // Servers
+        zoneProperties.servers = {
+            value: Object.create({}, {
+                webServer: {
+                    value: changeGetterSetter('server', 'webServer', properties.webServer)
+                }
+                webSockets: {
+                    value: changeGetterSetter('server', 'webSockets', properties.webServer)
+                }
+            });
+        };
+
         return zoneProperties;
     })();
 

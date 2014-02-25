@@ -146,6 +146,14 @@ function defaultZoneProperties() {
             'xh-yl-zh': null,
             'xh-ym-zh': null,
             'xh-yh-zh': null,
+        },
+        servers: {
+            webServer: {
+                port: 8080
+            },
+            webSockets: {
+                port: 9090
+            }
         }
     }
 }
