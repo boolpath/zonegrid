@@ -19,10 +19,19 @@ function createRelationships(neighbors, changeGetterSetter) {
         // return neighbor;
         return {
             value: Object.create({}, {
+                side: location,
                 server: neighbor,
-                bookedin: Object.create({}, {
+                bookedin: {
                     value: {}
-                })
+                },
+                emit: {
+                    writable: true,
+                    value: function () {}
+                },
+                on: {
+                    writable: true,
+                    value: function () {}
+                }   
             })
         };
     }
