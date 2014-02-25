@@ -30,13 +30,16 @@ function createZoneServer(zone, globalNamespace) {
 
     eventerface.find(globalNamespace, function (zoneNamespace) {
         zoneNamespace.on('/elements/quadrantChange', function(change) {
-            console.log('   quadrantChange', change.quadrant);
+            // console.log('   quadrantChange', change.quadrant);
+            jamp.handleQuadrantChange(zone, change);
         });
         zoneNamespace.on('/zone/neighborChange', function(change) {
-            console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
-            jamp.createChannel(zone, zoneNamespace, change.value.local, change.value.remote);
+            // console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
+            jamp.createChannel(zone, zoneNamespace, change.neighbor, change.value);
         });
     });
 
     return servers;
 }
+
+
