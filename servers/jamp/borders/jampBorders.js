@@ -5,7 +5,7 @@ var eventerface = require('eventerface');
  *@method {function} - 
  */
 module.exports = {
-    create: create
+    create: createBorder
 };
 
 /*----------------------------------------------------------------------------*/
@@ -17,8 +17,7 @@ module.exports = {
  * @param {object} channelOptions - Host and port of the local and remote sides of the channel
  * @returns
  */
-function create(zone, zoneNamespace, side, channelOptions) {
-    var logPrefix = 'Zone ' + zone.id + ': ';
+function createBorder(zone, zoneNamespace, side, channelOptions, onReady) {
     eventerface.create('channel://' + channelOptions.local.port, function (neighbor) {
         // console.log('Channel created on port ' + channelOptions.local.port);
         zone._neighbors[side].emit = neighbor.emit;
@@ -27,18 +26,9 @@ function create(zone, zoneNamespace, side, channelOptions) {
         neighbor.connect(channelOptions.remote.host + ':' + channelOptions.remote.port, function () {
             // console.log('Connected to neighbor on ' + channelOptions.remote.port);
             neighbor.emit('ping', 'pong');
-        });
-        neighbor.on('ping', function (message) {
-            console.log(logPrefix + 'Ping from ' + channelOptions.remote.port + ': ' + message);
-        });
-        neighbor.on('scopein', function (message) {
-            console.log(logPrefix + 'Scopein from ' + channelOptions.remote.port + ': ' + message);
-        });
-        neighbor.on('bookin', function (message) {
-            console.log(logPrefix + 'Bookin from ' + channelOptions.remote.port + ': ' + message);
-        });
-        neighbor.on('checkin', function (message) {
-            console.log(logPrefix + 'Checkin from ' + channelOptions.remote.port + ': ' + message);
+            if (typeof onReady === 'function') {
+                onReady(neighbor, side);
+            }
         });
     });
 }
