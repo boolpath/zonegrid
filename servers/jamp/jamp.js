@@ -32,6 +32,15 @@ function createChannel(zone, zoneNamespace, side, channelOptions) {
         neighbor.on('ping', function (message) {
             console.log(logPrefix + 'Ping from ' + channelOptions.remote.port + ': ' + message);
         });
+        neighbor.on('scopein', function (message) {
+            console.log(logPrefix + 'Scopein from ' + channelOptions.remote.port + ': ' + message);
+        });
+        neighbor.on('bookin', function (message) {
+            console.log(logPrefix + 'Bookin from ' + channelOptions.remote.port + ': ' + message);
+        });
+        neighbor.on('checkin', function (message) {
+            console.log(logPrefix + 'Checkin from ' + channelOptions.remote.port + ': ' + message);
+        });
     });
 }
 
@@ -65,8 +74,7 @@ function handleQuadrantChange(zone, change) {
             var jampMargin = margins[coordinate];
             if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
                 var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey];
-                console.log('   ', coordinate, jampMargin, neighbor.side);
-                neighbor.emit(jampMargin, element.name)
+                neighbor.emit(jampMargin, element.name);
             }
         });
     }
