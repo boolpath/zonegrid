@@ -148,9 +148,9 @@ function defaultZoneProperties() {
             'xh-yh-zh': null,
         },
         servers: {
-            // jamp: {
-            //     port: 7070
-            // },
+            jampAssets: {
+                port: 7070
+            },
             webServer: {
                 port: 8080
             },
