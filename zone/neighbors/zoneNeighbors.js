@@ -19,8 +19,13 @@ function createRelationships(neighbors, changeGetterSetter) {
         // return neighbor;
         return {
             value: Object.create({}, {
-                side: location,
+                side: {
+                    value: location
+                },
                 server: neighbor,
+                scopedin: {
+                    value: {}
+                },
                 bookedin: {
                     value: {}
                 },
