@@ -19,7 +19,10 @@ function createRelationships(neighbors, changeGetterSetter) {
         // return neighbor;
         return {
             value: Object.create({}, {
-                server: neighbor
+                server: neighbor,
+                bookedin: Object.create({}, {
+                    value: {}
+                })
             })
         };
     }

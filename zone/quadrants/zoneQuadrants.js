@@ -80,7 +80,6 @@ function create(globalNamespace, zoneEvents, margins) {
                 element.quadrant.x = quadrant.x; 
                 element.quadrant.y = quadrant.y; 
                 element.quadrant.z = quadrant.z; 
-                console.log(element.quadrant);
                 globalNamespace.emit('/elements/quadrantChange', {
                     key: element.key,
                     quadrant: quadrant
