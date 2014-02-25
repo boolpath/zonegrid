@@ -23,10 +23,10 @@ function createRelationships(neighbors, changeGetterSetter) {
                     value: location
                 },
                 server: neighbor,
-                scopedin: {
+                scopein: {
                     value: {}
                 },
-                bookedin: {
+                bookin: {
                     value: {}
                 },
                 emit: {
