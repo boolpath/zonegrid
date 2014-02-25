@@ -57,7 +57,7 @@ function handleQuadrantChange(zone, change) {
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
         var sides = index.split('-'),
-            margins = neighbors[index];
+            // margins = neighbors[index];
             neighbor = zone.neighbors(sides[0], sides[1], sides[2]); 
         if (!neighbor.server) { continue; }
 
@@ -73,14 +73,26 @@ function handleQuadrantChange(zone, change) {
 }
 
 function getInvolvedNeighbors(sides, margins) {
-    var neighbors = {};
+    var neighbors = {},
+        middle = 'middle';
 
-    // Add the neighbor associated directly with this quadrant
-    neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
-    // Add the neighbors close to this quadrant
-    if ((sides.y === 'lower' || sides.y === 'higher') && (sides.x === 'lower' || sides.x === 'higher')) {
-        neighbors['x.middle' +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
-        neighbors['x.' + sides.x +'-'+ 'y.middle' +'-'+ 'z.' + sides.z] = margins;
+     // Add the neighbor associated directly with this quadrant
+        neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+    // Add the neighbors that are close to this quadrant
+    // XY plane
+    if ((sides.x === 'lower' || sides.x === 'higher') && (sides.y === 'lower' || sides.y === 'higher')) {
+        neighbors['x.' + middle +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.' + middle +'-'+ 'z.' + sides.z] = margins;
+    }
+    // YZ plane
+    if ((sides.y === 'lower' || sides.y === 'higher') && (sides.z === 'lower' || sides.z === 'higher')) {
+        neighbors['x.' + sides.x +'-'+ 'y.' + middle +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + middle] = margins;
+    }
+    // XZ plane
+    if ((sides.x === 'lower' || sides.x === 'higher') && (sides.z === 'lower' || sides.z === 'higher')) {
+        neighbors['x.' + middle +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + middle] = margins;
     }
 
     return neighbors
