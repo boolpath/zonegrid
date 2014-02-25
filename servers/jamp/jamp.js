@@ -1,7 +1,8 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
     jampBorders = require('./borders'),
-    jampCrossings = require('./crossings');
+    jampCrossings = require('./crossings'),
+    jampProtocol = require('./protocol');
 
 /** MODULE INTERFACE
  *@method {function} - 
@@ -25,7 +26,9 @@ function createServer(zone, globalNamespace) {
         });
         zoneNamespace.on('/zone/neighborChange', function(change) {
             // console.log('zone_' + zone.id + ': neighborChange', change.neighbor);
-            jamp.createBorder(change.neighbor, change.value);
+            jamp.createBorder(change.neighbor, change.value, function (neighbor, side) {
+                jampProtocol.implement(zone, neighbor, side);
+            });
         });
     });
 
