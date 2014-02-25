@@ -50,17 +50,9 @@ function handleQuadrantChange(zone, change) {
             x: x[1],
             y: y[1],
             z: z[1]
-        }
-        neighbors = {};
+        };
     
-    // Add the neighbor associated directly with this quadrant
-    neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = {
-        x: margins.x,
-        y: margins.y,
-        z: margins.z
-    };
-    // Add the neighbors close to this quadrant
-
+    var neighbors = getInvolvedNeighbors(sides, margins);
 
     // Loop through all neighbors and notify the margin crossing 
     for (var side in neighbors) {
@@ -78,4 +70,18 @@ function handleQuadrantChange(zone, change) {
             }
         });
     }
+}
+
+function getInvolvedNeighbors(sides, margins) {
+    var neighbors = {};
+
+    // Add the neighbor associated directly with this quadrant
+    neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = {
+        x: margins.x,
+        y: margins.y,
+        z: margins.z
+    };
+    // Add the neighbors close to this quadrant
+
+    return neighbors
 }
