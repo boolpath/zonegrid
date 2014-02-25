@@ -14,7 +14,7 @@ module.exports = {
  */
 function createRelationships(neighbors, changeGetterSetter) {
     function createNeighbor(location) {
-        var neighbor = neighbors[location] || null;
+        var neighbor = neighbors[location] || undefined;
         neighbor = changeGetterSetter('neighbor', location, neighbor);
         // return neighbor;
         return {
