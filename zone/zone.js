@@ -46,7 +46,9 @@ function create(properties) {
         properties = zoneProperties.define(properties, globalNamespace, localNamespace);
         Object.defineProperties(zone, properties);
         zoneEvents.watchProperties(zone, globalNamespace, localNamespace.emitter());
-        zone.moduleapi.emit('ready');
+        servers.start(zone, function () {
+            zone.moduleapi.emit('ready');
+        });
     });
 
     return zone;

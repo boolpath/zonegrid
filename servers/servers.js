@@ -15,7 +15,8 @@ var SERVERS = {
 module.exports = {
     create: {
         jampServer: createJampServer
-    }
+    },
+    start: start
 }; 
 
 /*----------------------------------------------------------------------------*/
@@ -42,4 +43,11 @@ function createJampServer(zone, globalNamespace) {
     return servers;
 }
 
-
+/** Starts the servers of a given zone
+ * @param {object} zone - The zone whose servers will be started
+ */
+function start(zone, onStarted) {
+    if (typeof onStarted == 'function') {
+        onStarted();
+    }
+}
