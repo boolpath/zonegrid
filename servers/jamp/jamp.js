@@ -52,14 +52,14 @@ function handleQuadrantChange(zone, change) {
             z: z[1]
         };
     
-    var neighbors = getInvolvedNeighbors(sides, margins);
+    var neighbors = getInvolvedNeighbors(sides, margins); //console.log(neighbors);
 
     // Loop through all neighbors and notify the margin crossing 
-    for (var side in neighbors) {
-        var sides = side.split('-'),
-            margins = neighbors[side],
-            neighbor = zone.neighbors(sides[0], sides[1], sides[2]);
-        if (!neighbor.server) { return; }
+    for (var index in neighbors) {
+        var sides = index.split('-'),
+            margins = neighbors[index];
+            neighbor = zone.neighbors(sides[0], sides[1], sides[2]); 
+        if (!neighbor.server) { continue; }
 
         ['x', 'y', 'z'].forEach(function (coordinate) {
             var jampMargin = margins[coordinate];
@@ -76,12 +76,12 @@ function getInvolvedNeighbors(sides, margins) {
     var neighbors = {};
 
     // Add the neighbor associated directly with this quadrant
-    neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = {
-        x: margins.x,
-        y: margins.y,
-        z: margins.z
-    };
+    neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
     // Add the neighbors close to this quadrant
+    if ((sides.y === 'lower' || sides.y === 'higher') && (sides.x === 'lower' || sides.x === 'higher')) {
+        neighbors['x.middle' +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.middle' +'-'+ 'z.' + sides.z] = margins;
+    }
 
     return neighbors
 }
