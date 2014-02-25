@@ -12,7 +12,7 @@ module.exports = {
 
 /*----------------------------------------------------------------------------*/
 
-function createServer(zone, globalNamespace) {
+function createServer(zone, globalNamespace) { 
     var jamp = {
         handleQuadrantChange: handleQuadrantChange,
         createChannel: createChannel
