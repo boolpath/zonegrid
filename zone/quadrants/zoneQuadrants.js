@@ -1,5 +1,5 @@
 // Zonegrid's quadrant system is built from splitting each coordinate axis into 9 bands: 
-var BANDS = ['lower.scopeout', 'lower.checkin',  'lower.bookin',  'lower.scopein', 'zone',
+var BANDS = ['lower.scopeout', 'lower.checkin',  'lower.bookin',  'lower.scopein', 'middle',
              'higher.scopein', 'higher.bookin', 'higher.checkin', 'higher.scopeout'];
 
 /** MODULE INTERFACE
