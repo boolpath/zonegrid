@@ -44,9 +44,11 @@ function create(properties) {
 
     // Join the created zone namespace and define the properties of the zone object
     eventerface.find(globalNamespace, function (globalNamespace) {
+        // Define the properties of the zone object and watch their changes with event listeners
         properties = zoneProperties.define(properties, globalNamespace, localNamespace);
         Object.defineProperties(zone, properties);
         zoneEvents.watchProperties(zone, globalNamespace, localNamespace.emitter());
+        // Start the zone's servers and emit the 'ready' event
         zoneServers.start(function () {
             zone.moduleapi.emit('ready');
         });

@@ -38,8 +38,39 @@ function setup(zone, globalNamespace) {
  * @param {function} onStarted - Starts the servers of a zone
  */
 function start(zone, globalNamespace, onStarted) {
+    var startedServers = 0,
+        totalServers = 3, 
+        jampAssets = zone.servers.jampAssets,
+        webServer = zone.servers.webServer,
+        webSockets = zone.servers.webSockets;
+        
+    var serverReady = function () {
+        if (++startedServers === totalServers &&
+            typeof onStarted == 'function') {
+            onStarted();
+        }
+    };
 
-    if (typeof onStarted == 'function') {
-        onStarted();
+    // JAMP asset server
+    if (typeof jampAssets === 'object' && typeof jampAssets.port === 'number') {
+        jamp.start.assetServer(zone, globalNamespace, jampAssets, function () {
+            serverReady();
+        })
+    } else {
+        serverReady();
     }
+
+    // Web Server
+    if (false) {
+
+    } else {
+        serverReady();
+    }
+
+    // WebSockets server
+    if (false) {
+
+    } else {
+        serverReady();
+    }    
 }
