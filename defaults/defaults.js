@@ -152,7 +152,7 @@ function defaultZoneProperties() {
                 host: 'localhost',
                 port: 7070,
                 location: {
-                    type: 'local',
+                    type: 'fs',
                     url: process.cwd() + '/_zonegrid_assets'
                 }
             },

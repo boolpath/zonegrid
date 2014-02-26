@@ -29,7 +29,7 @@ function handleCrossings(zone, change) {
         };
     
     // Figure out which neighbors should receive the quadrant change notification
-    var neighbors = getInvolvedNeighbors(sides, margins); //console.log(neighbors);
+    var neighbors = getInvolvedNeighbors(sides, margins);
 
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
@@ -54,8 +54,7 @@ function handleCrossings(zone, change) {
                     message.request = {
                         hostname: jampAssets.host,
                         port:     jampAssets.port,
-                        path:     '/' + element.file,
-                        method:   'GET'
+                        path:     '/' + element.file
                     };
                 } 
                 // Send a JAMP message to the neighbor

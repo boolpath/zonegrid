@@ -53,6 +53,9 @@ function start(zone, globalNamespace, onStarted) {
 
     // JAMP asset server
     if (typeof jampAssets === 'object' && typeof jampAssets.port === 'number') {
+        // hacks
+            jampAssets.port += zone.id;
+            jampAssets.location.url += '/zone' + zone.id;
         jamp.start.assetServer(zone, globalNamespace, jampAssets, function () {
             serverReady();
         })
