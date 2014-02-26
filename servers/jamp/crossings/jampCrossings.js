@@ -51,9 +51,12 @@ function handleCrossings(zone, change) {
                     };
                 if (jampMargin === 'scopein') {
                     var jampAssets = zone.servers.jampAssets;
-                    message.url = (jampAssets.protocol || 'http') + '://' + 
-                                   jampAssets.host + ':' + jampAssets.port + '/' +
-                                   element.file;
+                    message.request = {
+                        hostname: jampAssets.host,
+                        port:     jampAssets.port,
+                        path:     '/' + element.file,
+                        method:   'GET'
+                    };
                 } 
                 // Send a JAMP message to the neighbor
                 neighbor.emit(jampMargin, message);
