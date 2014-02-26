@@ -149,12 +149,19 @@ function defaultZoneProperties() {
         },
         servers: {
             jampAssets: {
-                port: 7070
+                host: 'localhost',
+                port: 7070,
+                location: {
+                    type: 'local',
+                    url: process.cwd() + '/_zonegrid_assets'
+                }
             },
             webServer: {
+                host: 'localhost',
                 port: 8080
             },
             webSockets: {
+                host: 'localhost',
                 port: 9090
             }
         }
