@@ -10,7 +10,8 @@
     "version": "0.0.1",
     "license": "MIT",
     "dependencies": {
-        "eventerface": ">= 0.0.5"
+        "eventerface": ">= 0.0.5",
+        "socket.io": "0.9.x"
     },
     "keywords": ["zones", "grids", "scalability", "games", "handover"],
     "main": "zonegrid.js"
