@@ -26,7 +26,7 @@ function create(properties) {
         apiNamespace = eventerface.create(),
         apiEmitter = apiNamespace.emitter(),
         localNamespace = eventerface.create(),
-        zoneServers = servers.setup(zone, zoneNamespace);
+        zoneServers = servers.setup(zone);
 
     // Create event emitters in the same namespace to communicate with the module user
     Object.defineProperties(zone, {

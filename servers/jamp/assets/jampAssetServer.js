@@ -15,7 +15,7 @@ module.exports = {
  * @param
  * @returns
  */
-function createServer(zone, globalNamespace, options, onReady) {
+function createServer(zone, options, onReady) {
     var assetLocation = options.location.url;
     // Asset folder
     if (options.location.type === 'local') {

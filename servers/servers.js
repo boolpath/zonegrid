@@ -25,9 +25,9 @@ module.exports = {
  */
 function setup(zone) {
     var servers = {
-        start: start.bind(null, zone, zone.amespace),
+        start: start.bind(null, zone),
         setup: {
-            jampServer: jamp.setup.bind(null, zone, zone.namespace)
+            jampServer: jamp.setup.bind(null, zone)
         }
     };
 
@@ -37,7 +37,7 @@ function setup(zone) {
 /** Starts the servers of a given zone
  * @param {function} onStarted - Starts the servers of a zone
  */
-function start(zone, globalNamespace, onStarted) {
+function start(zone, onStarted) {
     var startedServers = 0,
         totalServers = 3, 
         jampAssets = zone.servers.jampAssets,
@@ -56,7 +56,7 @@ function start(zone, globalNamespace, onStarted) {
         // hacks
             jampAssets.port += zone.id;
             jampAssets.location.url += '/zone' + zone.id;
-        jamp.start.assetServer(zone, globalNamespace, jampAssets, function () {
+        jamp.start.assetServer(zone, jampAssets, function () {
             serverReady();
         })
     } else {
@@ -72,7 +72,7 @@ function start(zone, globalNamespace, onStarted) {
 
     // WebSockets server
     if (false) {//typeof webSockets === 'object' && typeof webSockets.port === 'number') {
-        webs.createServer(zone, globalNamespace, webSockets, function () {
+        webs.createServer(zone, webSockets, function () {
             serverReady();
         });
     } else {

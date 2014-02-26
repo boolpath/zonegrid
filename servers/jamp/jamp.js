@@ -20,13 +20,13 @@ module.exports = {
 /**
  *
  */
-function setup(zone, globalNamespace) { 
+function setup(zone) { 
     var jamp = {
         handleCrossings: jampCrossings.handle.bind(null, zone),
-        createBorder: jampBorders.create.bind(null, zone, globalNamespace)
+        createBorder: jampBorders.create.bind(null, zone)
     };
 
-    eventerface.find(globalNamespace, function (zoneNamespace) {
+    eventerface.find(zone.namespace, function (zoneNamespace) {
         zoneNamespace.on('/elements/quadrantChange', function(change) {
             // console.log('   quadrantChange', change.quadrant);
             jamp.handleCrossings(change);
@@ -45,8 +45,8 @@ function setup(zone, globalNamespace) {
 /**
  *
  */
-function startAssetServer(zone, globalNamespace, options, onReady) {
-    jampAssets.createServer(zone, globalNamespace, options, function () {
+function startAssetServer(zone, options, onReady) {
+    jampAssets.createServer(zone, options, function () {
         if (typeof onReady === 'function') {
             onReady();
         }
