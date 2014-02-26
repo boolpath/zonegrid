@@ -2,7 +2,8 @@
 var eventerface = require('eventerface'),
     jampBorders = require('./borders'),
     jampCrossings = require('./crossings'),
-    jampProtocol = require('./protocol');
+    jampProtocol = require('./protocol'),
+    jampAssets = require('./assets');
 
 /** MODULE INTERFACE
  *@method {function} - 
@@ -16,6 +17,9 @@ module.exports = {
 
 /*----------------------------------------------------------------------------*/
 
+/**
+ *
+ */
 function setup(zone, globalNamespace) { 
     var jamp = {
         handleCrossings: jampCrossings.handle.bind(null, zone),
@@ -38,8 +42,13 @@ function setup(zone, globalNamespace) {
     return jamp;
 }
 
+/**
+ *
+ */
 function startAssetServer(zone, globalNamespace, options, onReady) {
-    if (typeof onReady === 'function') {
-        onReady();
-    }
+    jampAssets.createServer(zone, globalNamespace, options, function () {
+        if (typeof onReady === 'function') {
+            onReady();
+        }
+    });
 }

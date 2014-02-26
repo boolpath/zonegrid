@@ -48,7 +48,8 @@ function handleCrossings(zone, change) {
                 var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey];
                 // Send a JAMP message to the neighbor
                 neighbor.emit(jampMargin, {
-                    name: element.name
+                    name: element.name,
+                    file: element.file
                 });
             }
         });
