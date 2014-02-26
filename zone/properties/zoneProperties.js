@@ -129,15 +129,9 @@ function define(properties, globalNamespace, localNamespace) {
         // Servers
         zoneProperties.servers = {
             value: Object.create({}, {
-                jamp: {
-                    value: properties.servers.jamp
-                },
-                webServer: {
-                    value: changeGetterSetter('server', 'webServer', properties.servers.webServer)
-                },
-                webSockets: {
-                    value: changeGetterSetter('server', 'webSockets', properties.servers.webSockets)
-                }
+                jampAssets: changeGetterSetter('server', 'jampAssets', properties.servers.jampAssets),
+                webServer:  changeGetterSetter('server', 'webServer',  properties.servers.webServer),
+                webSockets: changeGetterSetter('server', 'webSockets', properties.servers.webSockets)
             })
         };
 
