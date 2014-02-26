@@ -11,7 +11,8 @@
     "license": "MIT",
     "dependencies": {
         "eventerface": ">= 0.0.5",
-        "socket.io": "0.9.x"
+        "socket.io": "0.9.x",
+        "express": "3.x.x"
     },
     "keywords": ["zones", "grids", "scalability", "games", "handover"],
     "main": "zonegrid.js"
