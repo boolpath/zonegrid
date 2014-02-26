@@ -1,7 +1,8 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
     jamp = require('./jamp'),
-    webs = require('./webSockets');
+    webServer = require('./webServer'),
+    webSockets = require('./webSockets');
 
 /** LOCAL OBJECT 
  * @property {} - 
@@ -41,8 +42,8 @@ function start(zone, onStarted) {
     var startedServers = 0,
         totalServers = 3, 
         jampAssets = zone.servers.jampAssets,
-        webServer = zone.servers.webServer,
-        webSockets = zone.servers.webSockets;
+        webserver = zone.servers.webServer,
+        websockets = zone.servers.webSockets;
         
     var serverReady = function () {
         if (++startedServers === totalServers &&
@@ -52,10 +53,14 @@ function start(zone, onStarted) {
     };
 
     // JAMP asset server
-    if (typeof jampAssets === 'object' && typeof jampAssets.port === 'number') {
+    if (typeof jampAssets === 'object' && 
+        typeof jampAssets.port === 'number' &&
+        typeof jampAssets.location === 'object' &&
+        typeof jampAssets.location.url === 'string') {
         // hacks
             jampAssets.port += zone.id;
             jampAssets.location.url += '/zone' + zone.id;
+        //
         jamp.start.assetServer(zone, jampAssets, function () {
             serverReady();
         })
@@ -63,16 +68,25 @@ function start(zone, onStarted) {
         serverReady();
     }
 
-    // Web Server
-    if (false) {
-
+    // Web server
+    if (typeof webserver === 'object' && 
+        typeof webserver.port === 'number') {
+        // hacks
+            webserver.port += zone.id;
+        //
+        webServer.createServer(zone, webserver, function () {
+            serverReady();
+        });
     } else {
         serverReady();
     }
 
     // WebSockets server
-    if (false) {//typeof webSockets === 'object' && typeof webSockets.port === 'number') {
-        webs.createServer(zone, webSockets, function () {
+    if (typeof websockets === 'object' && typeof websockets.port === 'number') {
+        // hacks
+            websockets.port += zone.id;
+        //
+        webSockets.createServer(zone, websockets, function () {
             serverReady();
         });
     } else {
