@@ -1,6 +1,7 @@
 /* NODE MODULES */
 var eventerface = require('eventerface'),
-    jamp = require('./jamp');
+    jamp = require('./jamp'),
+    webs = require('./webSockets');
 
 /** LOCAL OBJECT 
  * @property {} - 
@@ -20,14 +21,13 @@ module.exports = {
 
 /** Creates the servers required by a zone to operate
  * @param {object} zone - The zone requesting the servers to be created
- * @param {object} globalNamespace - The name of the global namespace where the other zone components will emit events
  * @returns {object} servers - A set of the zone's servers
  */
-function setup(zone, globalNamespace) {
+function setup(zone) {
     var servers = {
-        start: start.bind(null, zone, globalNamespace),
+        start: start.bind(null, zone, zone.amespace),
         setup: {
-            jampServer: jamp.setup.bind(null, zone, globalNamespace)
+            jampServer: jamp.setup.bind(null, zone, zone.namespace)
         }
     };
 
@@ -71,8 +71,10 @@ function start(zone, globalNamespace, onStarted) {
     }
 
     // WebSockets server
-    if (false) {
-
+    if (false) {//typeof webSockets === 'object' && typeof webSockets.port === 'number') {
+        webs.createServer(zone, globalNamespace, webSockets, function () {
+            serverReady();
+        });
     } else {
         serverReady();
     }    

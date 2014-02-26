@@ -19,12 +19,14 @@ module.exports = {
  * @returns {object} zone - The created zone object
  */
 function create(properties) {
-    var zone = Object.create({}),
-        globalNamespace = 'zone_' + properties.id,
+    var zoneNamespace = 'zone_' + properties.id,
+        zone = Object.create({
+            namespace: zoneNamespace
+        }),
         apiNamespace = eventerface.create(),
         apiEmitter = apiNamespace.emitter(),
         localNamespace = eventerface.create(),
-        zoneServers = servers.setup(zone, globalNamespace);
+        zoneServers = servers.setup(zone, zoneNamespace);
 
     // Create event emitters in the same namespace to communicate with the module user
     Object.defineProperties(zone, {
@@ -43,11 +45,11 @@ function create(properties) {
     }
 
     // Join the created zone namespace and define the properties of the zone object
-    eventerface.find(globalNamespace, function (globalNamespace) {
+    eventerface.find(zoneNamespace, function (zoneNamespace) {
         // Define the properties of the zone object and watch their changes with event listeners
-        properties = zoneProperties.define(properties, globalNamespace, localNamespace);
+        properties = zoneProperties.define(properties, zoneNamespace, localNamespace);
         Object.defineProperties(zone, properties);
-        zoneEvents.watchProperties(zone, globalNamespace, localNamespace.emitter());
+        zoneEvents.watchProperties(zone, zoneNamespace, localNamespace.emitter());
         // Start the zone's servers and emit the 'ready' event
         zoneServers.start(function () {
             zone.moduleapi.emit('ready');
