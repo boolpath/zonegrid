@@ -1,5 +1,6 @@
 /* NODE MODULES */
-var http = require('http');
+var http = require('http'),
+    fs = require('fs');
 
 /** MODULE INTERFACE
  *@method {function} implement - Implements the JAMP protocol by listening and emitting the required events
@@ -22,28 +23,40 @@ function implementJampProtocol(zone, neighbor, side) {
     neighbor.on('ping', function (message) {
         console.log(logPrefix + 'Ping from ' + side + ': ' + (message || ''));
     });
+
     // Scopein messages
     neighbor.on('scopein', function (message) {
-        console.log(logPrefix + 'Scopein from ' + side + ': ' + JSON.stringify(message.request));
+        console.log(logPrefix + 'Scopein from ' + side + ': ' + message.name);
+        var assetsLocation = zone.servers.jampAssets.location.url,
+            locationType = zone.servers.jampAssets.location.type;
+
         var request = http.request(message.request, function (res) {
-            res.on('data', function (chunk) {
-                
-            });
-            res.on('end', function (chunk) {
-                
-            });
+            if (res.statusCode == 404) {
+
+            } else {
+                if (locationType === 'fs') {
+                    var path = assetsLocation + message.request.path;
+                    var fileStream = fs.createWriteStream(path, {
+                        flags: 'w+',
+                        encoding: 'utf8'
+                    });
+                    res.pipe(fileStream);
+                }
+            }
         });
         request.on('error', function(err) {
 
         });
         request.end();
     });
+
     // Bookin messages
     neighbor.on('bookin', function (message) {
-        console.log(logPrefix + 'Bookin from ' + side + ': ');
+        console.log(logPrefix + 'Bookin from ' + side + ': '+ message.name);
     });
+
     // Checkin messages
     neighbor.on('checkin', function (message) {
-        console.log(logPrefix + 'Checkin from ' + side + ': ');
+        console.log(logPrefix + 'Checkin from ' + side + ': '+ message.name);
     });
 }
