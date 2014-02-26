@@ -1,3 +1,6 @@
+/* NODE MODULES */
+var http = require('http');
+
 /** MODULE INTERFACE
  *@method {function} implement - Implements the JAMP protocol by listening and emitting the required events
  */
@@ -21,14 +24,26 @@ function implementJampProtocol(zone, neighbor, side) {
     });
     // Scopein messages
     neighbor.on('scopein', function (message) {
-        console.log(logPrefix + 'Scopein from ' + side + ': ' + message);
+        console.log(logPrefix + 'Scopein from ' + side + ': ' + JSON.stringify(message.request));
+        var request = http.request(message.request, function (res) {
+            res.on('data', function (chunk) {
+                
+            });
+            res.on('end', function (chunk) {
+                
+            });
+        });
+        request.on('error', function(err) {
+
+        });
+        request.end();
     });
     // Bookin messages
     neighbor.on('bookin', function (message) {
-        console.log(logPrefix + 'Bookin from ' + side + ': ' + message);
+        console.log(logPrefix + 'Bookin from ' + side + ': ');
     });
     // Checkin messages
     neighbor.on('checkin', function (message) {
-        console.log(logPrefix + 'Checkin from ' + side + ': ' + message);
+        console.log(logPrefix + 'Checkin from ' + side + ': ');
     });
 }
