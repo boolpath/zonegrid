@@ -17,11 +17,24 @@ module.exports = {
  */
 function createServer(zone, globalNamespace, options, onReady) {
     var assetLocation = options.location.url;
+    // Asset folder
+    if (options.location.type === 'local') {
+        fs.stat(assetLocation, function(err, stat) {
+            if (err && (err.errno == 34 || err.code === 'ENOENT')) { // ENOENT
+                fs.mkdir(assetLocation, function (err) {
+
+                });
+            }
+        });
+    }
+
+    // HTTP server
     http.createServer(function (req, res) {
         var path = assetLocation + req.url;
         fs.stat(path, function(err, stat) {
             if (err) {
-                console.log(err);
+                res.statusCode = 404; // Not found
+                res.end();
             } else {
                 var fileStream = fs.createReadStream(path);
                 fileStream.pipe(res);
