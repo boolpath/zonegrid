@@ -45,12 +45,18 @@ function handleCrossings(zone, change) {
             // and the neighbor receives notifications about this margin crossing,
             // and the notification about this element has not been sent already
             if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
-                var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey];
+                var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey],
+                    message = {
+                        name: element.name
+                    };
+                if (jampMargin === 'scopein') {
+                    var jampAssets = zone.servers.jampAssets;
+                    message.url = (jampAssets.protocol || 'http') + '://' + 
+                                   jampAssets.host + ':' + jampAssets.port + '/' +
+                                   element.file;
+                } 
                 // Send a JAMP message to the neighbor
-                neighbor.emit(jampMargin, {
-                    name: element.name,
-                    file: element.file
-                });
+                neighbor.emit(jampMargin, message);
             }
         });
     }
