@@ -8,7 +8,10 @@ var eventerface = require('eventerface'),
  *@method {function} - 
  */
 module.exports = {
-    setup: setup
+    setup: setup,
+    start: {
+        assetServer: startAssetServer
+    }
 };
 
 /*----------------------------------------------------------------------------*/
@@ -33,4 +36,10 @@ function setup(zone, globalNamespace) {
     });
 
     return jamp;
+}
+
+function startAssetServer(zone, globalNamespace, options, onReady) {
+    if (typeof onReady === 'function') {
+        onReady();
+    }
 }
