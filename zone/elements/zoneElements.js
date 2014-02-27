@@ -77,7 +77,7 @@ function createContainer(zoneEvents, zoneQuadrants) {
             return false;
         } else { 
             delete elements[key];
-            zoneEvents.emit('/element/remove', key);
+            zoneEvents.emit('/elements/remove', key);
             return true;
         }
     }
