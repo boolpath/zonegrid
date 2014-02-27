@@ -3,7 +3,8 @@ var eventerface = require('eventerface')
     EventEmitter = require('events').EventEmitter,
     zoneProperties = require('./properties'),
     zoneEvents = require('./events'),
-    servers = require('../servers');
+    servers = require('../servers'),
+    io = require('socket.io');
 
 /** MODULE INTERFACE
  *@method {function} create - 
@@ -51,8 +52,12 @@ function create(properties) {
         Object.defineProperties(zone, properties);
         zoneEvents.watchProperties(zone, zoneNamespace, localNamespace.emitter());
         // Start the zone's servers and emit the 'ready' event
-        zoneServers.start(function () {
-            zone.moduleapi.emit('ready');
+        zoneServers.start.jampServer(function () {
+            zoneServers.start.webServer(function () {
+                zoneServers.start.webSockets(function () {
+                    zone.moduleapi.emit('ready');
+                });
+            });
         });
     });
 
