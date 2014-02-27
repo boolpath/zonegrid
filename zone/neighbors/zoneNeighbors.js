@@ -15,7 +15,7 @@ module.exports = {
 function createRelationships(neighbors, changeGetterSetter) {
     function createNeighbor(location) {
         var neighbor = neighbors[location] || undefined;
-        neighbor = changeGetterSetter('neighbor', location, neighbor);
+        neighbor = changeGetterSetter('object', 'neighbor', location, neighbor);
         // return neighbor;
         return {
             value: Object.create({}, {

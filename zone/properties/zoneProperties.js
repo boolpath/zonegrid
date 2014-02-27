@@ -30,13 +30,13 @@ function define(properties, globalNamespace, localNamespace) {
                 value: properties.id
             },
             // Name of the zone
-            name: changeGetterSetter('name', 'name', properties.name),
+            name: changeGetterSetter('string', 'name', 'name', properties.name),
             // Size of the zone
             size: {
                 value: Object.create({}, {
-                    x: changeGetterSetter('size', 'x', properties.size.x),
-                    y: changeGetterSetter('size', 'y', properties.size.y),
-                    z: changeGetterSetter('size', 'z', properties.size.z)
+                    x: changeGetterSetter('number', 'size', 'x', properties.size.x),
+                    y: changeGetterSetter('number', 'size', 'y', properties.size.y),
+                    z: changeGetterSetter('number', 'size', 'z', properties.size.z)
                 })
             },
             // Zone limits
@@ -44,21 +44,21 @@ function define(properties, globalNamespace, localNamespace) {
             // Zone center coordinates
             coordinates: {
                 value: Object.create({}, {
-                    x: changeGetterSetter('coordinates', 'x', properties.coordinates.x),
-                    y: changeGetterSetter('coordinates', 'y', properties.coordinates.y),
-                    z: changeGetterSetter('coordinates', 'z', properties.coordinates.z)
+                    x: changeGetterSetter('number', 'coordinates', 'x', properties.coordinates.x),
+                    y: changeGetterSetter('number', 'coordinates', 'y', properties.coordinates.y),
+                    z: changeGetterSetter('number', 'coordinates', 'z', properties.coordinates.z)
                 })
             },
             // Maximum range of visibility
             visibility: {
                 value: Object.create({}, {
-                    x: changeGetterSetter('visibility', 'x', properties.visibility.x),
-                    y: changeGetterSetter('visibility', 'y', properties.visibility.y),
-                    z: changeGetterSetter('visibility', 'z', properties.visibility.z)
+                    x: changeGetterSetter('number', 'visibility', 'x', properties.visibility.x),
+                    y: changeGetterSetter('number', 'visibility', 'y', properties.visibility.y),
+                    z: changeGetterSetter('number', 'visibility', 'z', properties.visibility.z)
                 })
             },
             // Bookin and checkin margin size
-            handover: changeGetterSetter('handover', 'handover', properties.handover),
+            handover: changeGetterSetter('number', 'handover', 'handover', properties.handover),
             // Zone scope and handover limits
             margins: {
                 value: Object.create({}, {
@@ -129,9 +129,9 @@ function define(properties, globalNamespace, localNamespace) {
         // Servers
         zoneProperties.servers = {
             value: Object.create({}, {
-                jampAssets: changeGetterSetter('server', 'jampAssets', properties.servers.jampAssets),
-                webServer:  changeGetterSetter('server', 'webServer',  properties.servers.webServer),
-                webSockets: changeGetterSetter('server', 'webSockets', properties.servers.webSockets)
+                jampAssets: changeGetterSetter('object', 'server', 'jampAssets', properties.servers.jampAssets),
+                webServer:  changeGetterSetter('object', 'server', 'webServer',  properties.servers.webServer),
+                webSockets: changeGetterSetter('object', 'server', 'webSockets', properties.servers.webSockets)
             })
         };
 
@@ -146,14 +146,14 @@ function define(properties, globalNamespace, localNamespace) {
      * @param {number/string} initialValue - The initial value of the property
      * @returns {object} - An object with #get and #set function properties
      */
-    function changeGetterSetter(typeofChange, propertyChanged, initialValue) {
+    function changeGetterSetter(typeofProperty, typeofChange, propertyChanged, initialValue) {
         var value = initialValue;
         return {
             get: function () {
                 return value; 
             },
             set: function (newValue) {
-                value = newValue;
+                value = (typeof newValue === typeofProperty) ? newValue : value;
                 propertiesEvents.emit(typeofChange + 'Change', {
                     property: propertyChanged,
                     value: newValue
