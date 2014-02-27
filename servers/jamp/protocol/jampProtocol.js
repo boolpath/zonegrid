@@ -34,6 +34,7 @@ function implementJampProtocol(zone, neighbor, side) {
             if (res.statusCode == 404) {
 
             } else {
+                zone.elements.add(message.element);
                 if (locationType === 'fs') {
                     var path = assetsLocation + message.request.path;
                     var fileStream = fs.createWriteStream(path, {
