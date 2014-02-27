@@ -99,9 +99,9 @@ function createContainer(zoneEvents, zoneQuadrants) {
         }
         // Try to redefine the position property
         position = Object.create({}, { 
-            x: changeGetterSetter('position', 'x', position.x).call(element),
-            y: changeGetterSetter('position', 'y', position.y).call(element),
-            z: changeGetterSetter('position', 'z', position.z).call(element)
+            x: changeGetterSetter('number', 'position', 'x', position.x).call(element),
+            y: changeGetterSetter('number', 'position', 'y', position.y).call(element),
+            z: changeGetterSetter('number', 'position', 'z', position.z).call(element)
         });
         quadrant = zoneQuadrants.which(position);
         try {
@@ -119,7 +119,7 @@ function createContainer(zoneEvents, zoneQuadrants) {
         return watchedElement;
     }
 
-    function changeGetterSetter(typeofChange, changedProperty, initialValue) {
+    function changeGetterSetter(typeofProperty, typeofChange, changedProperty, initialValue) {
         return function () {
             var element = this,
                 value = initialValue;
@@ -129,11 +129,11 @@ function createContainer(zoneEvents, zoneQuadrants) {
                     return value;
                 },
                 set: function (newValue) {
-                    value = newValue;
+                    value = (typeof newValue === typeofProperty) ? newValue : value;
                     zoneEvents.emit('/element/' + typeofChange + 'Change', {
                         element: element,
                         property: changedProperty, 
-                        value: newValue
+                        value: value
                     });
                 }
             }
