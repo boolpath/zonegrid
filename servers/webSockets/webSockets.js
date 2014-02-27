@@ -25,7 +25,12 @@ function createServer(zone, options, onReady) {
         webSockets.sockets.on('connection', function (socket) {
             socket.emit('welcome', { hello: 'world' });
             socket.on('elementEvent', function (event) {
-                // console.log('routing event');
+                var scopedIn = zone.scopein[event.key];
+                if (scopedIn) {
+                    for (var side in scopedIn) {
+                        zone._neighbors[side].emit('scopeEvent', event);
+                    }
+                }
                 zone.moduleapi.emit('elementEvent', event);
             });
         });
