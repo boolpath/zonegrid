@@ -26,7 +26,11 @@ module.exports = {
  */
 function setup(zone) {
     var servers = {
-        start: start.bind(null, zone),
+        start: {
+            jampServer: startJampServer.bind(null, zone),
+            webServer: startWebServer.bind(null, zone),
+            webSockets: startWebSocketsServer.bind(null, zone)
+        },
         setup: {
             jampServer: jamp.setup.bind(null, zone)
         }
@@ -35,24 +39,8 @@ function setup(zone) {
     return servers;
 }
 
-/** Starts the servers of a given zone
- * @param {function} onStarted - Starts the servers of a zone
- */
-function start(zone, onStarted) {
-    var startedServers = 0,
-        totalServers = 3, 
-        jampAssets = zone.servers.jampAssets,
-        webserver = zone.servers.webServer,
-        websockets = zone.servers.webSockets;
-        
-    var serverReady = function () {
-        if (++startedServers === totalServers &&
-            typeof onStarted == 'function') {
-            onStarted();
-        }
-    };
-
-    // JAMP asset server
+function startJampServer(zone, onReady) {
+    var jampAssets = zone.servers.jampAssets;
     if (typeof jampAssets === 'object' && 
         typeof jampAssets.port === 'number' &&
         typeof jampAssets.location === 'object' &&
@@ -61,35 +49,37 @@ function start(zone, onStarted) {
             jampAssets.port += zone.id;
             jampAssets.location.url += '/zone' + zone.id;
         //
-        jamp.start.assetServer(zone, jampAssets, function () {
-            serverReady();
-        })
+        jamp.start.assetServer(zone, jampAssets, onReady);
     } else {
-        serverReady();
+        onReady();
     }
+}
 
-    // Web server
+/**
+ *
+ */
+function startWebServer(zone, onReady) {
+    var webserver = zone.servers.webServer;
     if (typeof webserver === 'object' && 
         typeof webserver.port === 'number') {
         // hacks
             webserver.port += zone.id;
-        //
-        webServer.createServer(zone, webserver, function () {
-            serverReady();
-        });
+        webServer.createServer(zone, webserver, onReady);
     } else {
-        serverReady();
+        onReady();
     }
+}
 
-    // WebSockets server
+/** Starts the servers of a given zone
+ * @param {function} onStarted - Starts the servers of a zone
+ */
+function startWebSocketsServer(zone, onReady) {
+    var websockets = zone.servers.webSockets;
     if (typeof websockets === 'object' && typeof websockets.port === 'number') {
         // hacks
             websockets.port += zone.id;
-        //
-        webSockets.createServer(zone, websockets, function () {
-            serverReady();
-        });
-    } else {
-        serverReady();
-    }    
+        webSockets.createServer(zone, websockets, onReady);
+    }  else {
+        onReady();
+    }
 }

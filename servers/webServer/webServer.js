@@ -18,19 +18,20 @@ module.exports = {
  * @param
  * @returns
  */
-function createServer(zone, options) {
+function createServer(zone, options, onReady) {
     var folder = options.folder;
-    eventerface.find(zone.namespace, function (zoneNamespace) {
+    // eventerface.find(zone.namespace, function (zoneNamespace) {
         fs.stat(folder, function (err, stat) {
             if (err) {
-                zone.events.emit('/webServer/error', err);
+
             } else {
                 var webServer = express();
                 webServer.use(express.static(folder));
                 http.createServer(webServer).listen(options.port, function () {
-                    zone.events.emit('/webServer/ready');
+                    console.log('Web server running on port ' + options.port);
+                    onReady();
                 });
             }
         });
-    });
+    // });
 }
