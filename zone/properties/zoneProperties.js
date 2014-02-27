@@ -135,6 +135,17 @@ function define(properties, globalNamespace, localNamespace) {
             })
         };
 
+        // Elements scoped and booked in neighboring zones
+        zoneProperties.scopein = {
+            value: {}
+        };
+        zoneProperties.bookin = {
+            value: {}
+        };
+        zoneProperties.checkin = {
+            value: {}
+        };
+
         return zoneProperties;
     })();
 
