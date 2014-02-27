@@ -45,6 +45,13 @@ function handleCrossings(zone, change) {
             // and the neighbor receives notifications about this margin crossing,
             // and the notification about this element has not been sent already
             if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
+                if (zone[jampMargin]) {
+                    if(typeof zone[jampMargin][elementKey] !== 'object') {
+                        zone[jampMargin][elementKey] = {};
+                    }
+                    zone[jampMargin][elementKey][neighbor.side] = true;
+                }
+
                 var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey],
                     position = element.position,
                     rotation = element.rotation,
@@ -52,6 +59,7 @@ function handleCrossings(zone, change) {
                     message = {
                         element: {
                             name: element.name,
+                            key: element.key,
                             position: {
                                 x: position.x,
                                 y: position.y,
