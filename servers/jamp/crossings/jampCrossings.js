@@ -46,9 +46,20 @@ function handleCrossings(zone, change) {
             // and the notification about this element has not been sent already
             if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
                 var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey],
+                    position = element.position,
+                    rotation = element.rotation,
+                    speed = element.speed || {},
                     message = {
-                        name: element.name
+                        element: {
+                            name: element.name,
+                            position: {
+                                x: position.x,
+                                y: position.y,
+                                z: position.z
+                            }
+                        }
                     };
+
                 if (jampMargin === 'scopein') {
                     var jampAssets = zone.servers.jampAssets;
                     message.request = {
@@ -56,6 +67,7 @@ function handleCrossings(zone, change) {
                         port:     jampAssets.port,
                         path:     '/' + element.file
                     };
+                    message.element.file = element.file;
                 } 
                 // Send a JAMP message to the neighbor
                 neighbor.emit(jampMargin, message);
