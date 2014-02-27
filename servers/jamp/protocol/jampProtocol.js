@@ -50,6 +50,10 @@ function implementJampProtocol(zone, neighbor, side) {
         });
         request.end();
     });
+    // Scope events
+    neighbor.on('scopeEvent', function (message) {
+        zone.moduleapi.emit('elementEvent', message);
+    });
 
     // Bookin messages
     neighbor.on('bookin', function (message) {
