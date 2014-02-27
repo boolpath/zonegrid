@@ -158,7 +158,8 @@ function defaultZoneProperties() {
             },
             webServer: {
                 host: 'localhost',
-                port: 8080
+                port: 8080,
+                folder: process.cwd() + '/_zonegrid_webserver'
             },
             webSockets: {
                 host: 'localhost',
