@@ -41,6 +41,20 @@ function watchProperties(zone, globalNamespace, properties) {
         zone.margins.handover.checkin[property].lower  = lowerLimit  - handover;
         zone.margins.handover.checkin[property].higher = higherLimit + handover;
 
+        var scopeout = zone.margins.scope.outer,
+            scopein = zone.margins.scope.inner,
+            bookin = zone.margins.handover.bookin,
+            checkin = zone.margins.handover.checkin;
+
+        // Create an object with arrays for each coordinate and
+        // fill them with the limits of the visibility and handover margins
+        zone.quadrants.limits.x = [scopeout.x.lower, checkin.x.lower,  bookin.x.lower,  scopein.x.lower, 
+                                   scopein.x.higher, bookin.x.higher, checkin.x.higher, scopeout.x.higher];
+        zone.quadrants.limits.y = [scopeout.y.lower, checkin.y.lower,  bookin.y.lower,  scopein.y.lower, 
+                                   scopein.y.higher, bookin.y.higher, checkin.y.higher, scopeout.y.higher];
+        zone.quadrants.limits.z = [scopeout.z.lower, checkin.z.lower,  bookin.z.lower,  scopein.z.lower, 
+                                   scopein.z.higher, bookin.z.higher, checkin.z.higher, scopeout.z.higher];
+
     });
     properties.on('visibilityChange', function (change) {
         // console.log('visibilityChange');
@@ -82,11 +96,11 @@ function watchProperties(zone, globalNamespace, properties) {
     });
 
     // Zone elements
-    properties.on('/element/add', function (element) {
-        // console.log('addElement');
+    properties.on('/elements/add', function (element) {
+        // console.log('addElement', element.key);
     });
-    properties.on('/element/remove', function (key) {
-        // console.log('removeElement');
+    properties.on('/elements/remove', function (key) {
+        console.log('removeElement');
     });
     properties.on('/element/positionChange', function (change) {
         // console.log('positionChange');
