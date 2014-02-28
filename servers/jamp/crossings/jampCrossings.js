@@ -12,7 +12,7 @@ module.exports = {
  * @param {object} change - Describes the quadrant change
  */
 function handleCrossings(zone, change) {
-    var elementKey = change.key,
+    var elementKey = change.id,
         quadrant = change.quadrant, // e.g. {x: 'lower.scopein', y: 'higher.bookin', z: 'middle'}
         x = quadrant.x.split('.'),  
         y = quadrant.y.split('.'),  
@@ -36,7 +36,7 @@ function handleCrossings(zone, change) {
         var sides = index.split('-'),
             // margins = neighbors[index];
             neighbor = zone.neighbors(sides[0], sides[1], sides[2]); 
-        if (!neighbor.server) { continue; }
+        if (!neighbor || !neighbor.server) { continue; }
 
         // 
         ['x', 'y', 'z'].forEach(function (coordinate) {
