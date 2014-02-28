@@ -77,13 +77,14 @@ function create(globalNamespace, zoneEvents, margins) {
 
         if (!lastQuadrant || (lastQuadrant && (quadrant.x !== lastQuadrant.x 
             || quadrant.y !== lastQuadrant.y || quadrant.z !== lastQuadrant.z))) {
-                element.quadrant.x = quadrant.x; 
-                element.quadrant.y = quadrant.y; 
-                element.quadrant.z = quadrant.z; 
                 globalNamespace.emit('/elements/quadrantChange', {
                     id: element.id,
-                    quadrant: quadrant
-                });
+                    quadrant: quadrant,
+                    lastQuadrant: lastQuadrant
+                }); 
+                element.quadrant.x = quadrant.x; 
+                element.quadrant.y = quadrant.y; 
+                element.quadrant.z = quadrant.z;
         }
     });
 
