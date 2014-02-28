@@ -14,6 +14,7 @@ module.exports = {
 function handleCrossings(zone, change) {
     var elementKey = change.id,
         quadrant = change.quadrant, // e.g. {x: 'lower.scopein', y: 'higher.bookin', z: 'middle'}
+        lastQuadrant = change.lastQuadrant,
         x = quadrant.x.split('.'),  
         y = quadrant.y.split('.'),  
         z = quadrant.z.split('.'),
@@ -27,9 +28,23 @@ function handleCrossings(zone, change) {
             y: y[1],    // e.g. 'bookin'
             z: z[1]     // e.g. undefined
         };
+
+    x = lastQuadrant.x.split('.');  
+    y = lastQuadrant.y.split('.');  
+    z = lastQuadrant.z.split('.');
+    var lastSides = {
+            x: x[0],    // e.g. 'lower'
+            y: y[0],    // e.g. 'higher'
+            z: z[0]     // e.g. 'middle'
+        },
+        lastMargins = {
+            x: x[1],    // e.g. 'scopein'
+            y: y[1],    // e.g. 'bookin'
+            z: z[1]     // e.g. undefined
+        };;
     
     // Figure out which neighbors should receive the quadrant change notification
-    var neighbors = getInvolvedNeighbors(sides, margins);
+    var neighbors = getInvolvedNeighbors(sides, margins, lastSides, lastMargins);
 
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
@@ -89,19 +104,43 @@ function handleCrossings(zone, change) {
  * @param {object} margins - Indicates the margins crossed in each coordinate axis
  * @returns {object} neighbors - A set of the neighbors interested in the events of a given quadrant
  */
-function getInvolvedNeighbors(sides, margins) {
+function getInvolvedNeighbors(sides, margins, lastSides, lastMargins) {
     var neighbors = {},
-        middle = 'middle';
+        lower = 'lower',
+        middle = 'middle',
+        higher = 'higher';
 
     // Add the neighbor associated directly with this quadrant
     neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+
+    // X axis
+    if (sides.x === middle && sides.x !== lastSides.x) {
+        neighbors['x.' + lastSides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + lastSides.x +'-'+ 'y.' + middle  +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + lastSides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + middle] = margins;
+        neighbors['x.' + lastSides.x +'-'+ 'y.' + middle  +'-'+ 'z.' + middle] = margins;
+    }
+    // Y axis
+    if (sides.y === middle && sides.y !== lastSides.y) {
+        neighbors['x.' + sides.x +'-'+ 'y.' + lastSides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + middle  +'-'+ 'y.' + lastSides.y +'-'+ 'z.' + sides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.' + lastSides.y +'-'+ 'z.' + middle] = margins;
+        neighbors['x.' + middle  +'-'+ 'y.' + lastSides.y +'-'+ 'z.' + middle] = margins;
+    } 
+    // Z axis
+    if (sides.z === middle && sides.z !== lastSides.z) {
+        neighbors['x.' + sides.x +'-'+ 'y.' + sides.y +'-'+ 'z.' + lastSides.z] = margins;
+        neighbors['x.' + middle  +'-'+ 'y.' + sides.y +'-'+ 'z.' + lastSides.z] = margins;
+        neighbors['x.' + sides.x +'-'+ 'y.' + middle  +'-'+ 'z.' + lastSides.z] = margins;
+        neighbors['x.' + middle  +'-'+ 'y.' + middle  +'-'+ 'z.' + lastSides.z] = margins;
+    }
 
     // Add the neighbors that are next to this quadrant
     // XY plane
     if ((sides.x === 'lower' || sides.x === 'higher') && (sides.y === 'lower' || sides.y === 'higher')) {
         neighbors['x.' + middle +'-'+ 'y.' + sides.y +'-'+ 'z.' + sides.z] = margins;
         neighbors['x.' + sides.x +'-'+ 'y.' + middle +'-'+ 'z.' + sides.z] = margins;
-    }
+    } 
     // YZ plane
     if ((sides.y === 'lower' || sides.y === 'higher') && (sides.z === 'lower' || sides.z === 'higher')) {
         neighbors['x.' + sides.x +'-'+ 'y.' + middle +'-'+ 'z.' + sides.z] = margins;
