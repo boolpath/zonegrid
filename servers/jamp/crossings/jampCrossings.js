@@ -48,17 +48,24 @@ function handleCrossings(zone, change) {
 
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
-        var neighborSides = index.split('-'),
-            // margins = neighbors[index];
-            neighbor = zone.neighbors(neighborSides[0], neighborSides[1], neighborSides[2]); 
+        var neighborSides = index.split('-');
+            neighborSides = {
+                x: neighborSides[0],
+                y: neighborSides[1],
+                z: neighborSides[2]
+            };
+        var neighbor = zone.neighbors(neighborSides.x, neighborSides.y, neighborSides.z); 
         if (!neighbor || !neighbor.server) { continue; }
 
-        // 
+        console.log(sides, margins);
         ['x', 'y', 'z'].forEach(function (coordinate) {
             var jampSide = sides[coordinate],
                 jampMargin = margins[coordinate];
-            if (jampSide === 'middle') { 
-                if (lastSides[coordinate] !== 'middle' && zone['scopein'][elementID][neighbor.side]) {
+            if (jampSide === 'middle') { console.log(neighborSides[coordinate].split('.')[1]);
+                if (lastSides[coordinate] !== 'middle' && 
+                    zone['scopein'][elementID][neighbor.side] &&
+                    neighborSides[coordinate].split('.')[1] !== sides[coordinate]) {
+                    console.log(coordinate, jampSide, jampMargin, lastSides[coordinate])
                     delete zone['scopein'][elementID][neighbor.side];
                     delete neighbor['scopein'][elementID];
                     neighbor.emit('scopeout', {
