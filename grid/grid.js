@@ -57,6 +57,12 @@ for (var i = 0, rows = grid.length; i < rows; i++) {
             (function (zone, sideComponents, parts, x, y) { 
                 var remote = remoteOptions(grid, sideComponents, x, y);
                 zone.on('ready', function () {
+                    if (!zone.ready) {
+                        zone.ready = true;
+                        zone.on('/element/event', function (event) {
+                            console.log('Zone ' + zone.id + ': ' + event.type);
+                        });
+                    }
                     if (!zone.neighbors.apply(null, sideComponents).server) {
                         var host  = parts[0],
                             port  = parts[1];
@@ -67,10 +73,7 @@ for (var i = 0, rows = grid.length; i < rows; i++) {
                                 port: port
                             },
                             remote: remote
-                        }
-                        zone.on('/element/event', function (event) {
-                            console.log('Zone ' + zone.id + ': ' + event.type);
-                        });
+                        } 
                     }
                 });
             })(zone, side.split('-'), neighbors[side].split(':'), j, i);

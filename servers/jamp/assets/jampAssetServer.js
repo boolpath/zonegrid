@@ -18,11 +18,11 @@ module.exports = {
 function createServer(zone, options, onReady) {
     var assetLocation = options.location.url;
     // Asset folder
-    if (options.location.type === 'local') {
+    if (options.location.type === 'fs') {
         fs.stat(assetLocation, function(err, stat) {
             if (err && (err.errno == 34 || err.code === 'ENOENT')) { // ENOENT
                 fs.mkdir(assetLocation, function (err) {
-
+                
                 });
             }
         });
