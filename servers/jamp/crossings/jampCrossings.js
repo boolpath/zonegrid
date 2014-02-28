@@ -48,14 +48,17 @@ function handleCrossings(zone, change) {
 
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
-        var sides = index.split('-'),
+        var neighborSides = index.split('-'),
             // margins = neighbors[index];
-            neighbor = zone.neighbors(sides[0], sides[1], sides[2]); 
+            neighbor = zone.neighbors(neighborSides[0], neighborSides[1], neighborSides[2]); 
         if (!neighbor || !neighbor.server) { continue; }
 
         // 
         ['x', 'y', 'z'].forEach(function (coordinate) {
-            var jampMargin = margins[coordinate];
+            var jampSide = sides[coordinate],
+                jampMargin = margins[coordinate];
+            if (jampSide === 'middle') { return; }
+            console.log(sides, coordinate, jampSide);
             // If there was a margin crossing in this coordinate axis, 
             // and the neighbor receives notifications about this margin crossing,
             // and the notification about this element has not been sent already
