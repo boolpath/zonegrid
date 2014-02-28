@@ -26,7 +26,7 @@ function createBorder(zone, side, channelOptions, onReady) {
         // Connect to a neighbor channel on a given host and port
         neighbor.connect(channelOptions.remote.host + ':' + channelOptions.remote.port, function () {
             // console.log('Connected to neighbor on ' + channelOptions.remote.port);
-            neighbor.emit('ping');
+            neighbor.emit('ping', zone.id);
             if (typeof onReady === 'function') {
                 onReady(neighbor, side);
             }
