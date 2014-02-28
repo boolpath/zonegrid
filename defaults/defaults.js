@@ -159,7 +159,7 @@ function defaultZoneProperties() {
             webServer: {
                 host: 'localhost',
                 port: 8080,
-                folder: process.cwd() + '/_zonegrid_webserver'
+                folder: process.cwd() + '/../extensibleCanvas'
             },
             webSockets: {
                 host: 'localhost',
