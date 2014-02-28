@@ -44,15 +44,13 @@ function createContainer(zoneEvents, zoneQuadrants) {
         };
     })();
 
-    function addElement(element, key) {
+    function addElement(element) {
         var elements = this,
             elementKey,
             id = element.id,
             name = element.name;
 
-        if (typeof key === 'string' && !elements[key]) {
-            elementKey = key;
-        } else if (typeof id === 'string' && !elements[id]) {
+        if (typeof id === 'string' && !elements[id]) {
             elementKey = id;
         } else if (typeof name === 'string' && !elements[name]) {
             elementKey = name;
@@ -71,18 +69,18 @@ function createContainer(zoneEvents, zoneQuadrants) {
         return elementKey;
     }
 
-    function removeElement(key) {
+    function removeElement(id) {
         var elements = this;
-        if (typeof elements[key] !== 'object') {
+        if (typeof elements[id] !== 'object') {
             return false;
-        } else { 
-            delete elements[key];
-            zoneEvents.emit('/elements/remove', key);
+        } else {
+            delete elements[id];
+            zoneEvents.emit('/elements/remove', id);
             return true;
         }
     }
 
-    function watchElement(element, key) {
+    function watchElement(element, id) {
         var watchedElement,
             position,
             quadrant;
@@ -105,13 +103,13 @@ function createContainer(zoneEvents, zoneQuadrants) {
         });
         quadrant = zoneQuadrants.which(position);
         try {
-            Object.defineProperty(element, 'key', { value: key });
+            Object.defineProperty(element, 'id', { value: id });
             Object.defineProperty(element, 'position', { value: position });
             Object.defineProperty(element, 'quadrant', { value: quadrant });
             watchedElement = element;
         } catch (e) {
             watchedElement = Object.create(element);
-            Object.defineProperty(watchedElement, 'key', { value: key });
+            Object.defineProperty(watchedElement, 'id', { value: id });
             Object.defineProperty(watchedElement, 'position', { value: position });
             Object.defineProperty(watchedElement, 'quadrant', { value: quadrant });
         }
