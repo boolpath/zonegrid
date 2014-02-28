@@ -16,7 +16,7 @@ module.exports = {
  * @returns
  */
 function createServer(zone, options, onReady) {
-    eventerface.find(zone.namespace, function (zoneNamespace) {
+    // eventerface.find(zone.namespace, function (zoneNamespace) {
         var webSockets = io.listen(options.port, function () {
             console.log('WebSockets server running on port ' + options.port);
             onReady();
@@ -24,15 +24,18 @@ function createServer(zone, options, onReady) {
         webSockets.set('log level', 1);
         webSockets.sockets.on('connection', function (socket) {
             socket.emit('welcome', { hello: 'world' });
-            socket.on('elementEvent', function (event) {
-                var scopedIn = zone.scopein[event.key];
+            socket.on('/element/event', function (event) {
+                var scopedIn = zone.scopein[event.id];
                 if (scopedIn) {
                     for (var side in scopedIn) {
                         zone._neighbors[side].emit('scopeEvent', event);
                     }
                 }
-                zone.moduleapi.emit('elementEvent', event);
+                zone.moduleapi.emit('/element/event', event);
+            });
+            socket.on('error', function (err) {
+                console.log(err);
             });
         });
-    });
+    // });
 }
