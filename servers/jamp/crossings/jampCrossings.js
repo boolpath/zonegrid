@@ -12,7 +12,7 @@ module.exports = {
  * @param {object} change - Describes the quadrant change
  */
 function handleCrossings(zone, change) {
-    var elementKey = change.id,
+    var elementID = change.id,
         quadrant = change.quadrant, // e.g. {x: 'lower.scopein', y: 'higher.bookin', z: 'middle'}
         lastQuadrant = change.lastQuadrant,
         x = quadrant.x.split('.'),  
@@ -62,15 +62,15 @@ function handleCrossings(zone, change) {
             // If there was a margin crossing in this coordinate axis, 
             // and the neighbor receives notifications about this margin crossing,
             // and the notification about this element has not been sent already
-            if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementKey]) {
+            if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
                 if (zone[jampMargin]) {
-                    if(typeof zone[jampMargin][elementKey] !== 'object') {
-                        zone[jampMargin][elementKey] = {};
+                    if(typeof zone[jampMargin][elementID] !== 'object') {
+                        zone[jampMargin][elementID] = {};
                     }
-                    zone[jampMargin][elementKey][neighbor.side] = true;
+                    zone[jampMargin][elementID][neighbor.side] = true;
                 }
 
-                var element = neighbor[jampMargin][elementKey] = zone.elements[elementKey],
+                var element = neighbor[jampMargin][elementID] = zone.elements[elementID],
                     position = element.position,
                     rotation = element.rotation,
                     speed = element.speed || {},
