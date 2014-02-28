@@ -81,13 +81,14 @@ function create(globalNamespace, zoneEvents, margins) {
                 element.quadrant.y = quadrant.y; 
                 element.quadrant.z = quadrant.z; 
                 globalNamespace.emit('/elements/quadrantChange', {
-                    key: element.key,
+                    id: element.id,
                     quadrant: quadrant
                 });
         }
     });
 
     return {
+        limits: quadrants,
         which: whichQuadrant.bind(quadrants)
     };
 }
