@@ -20,8 +20,8 @@ function implementJampProtocol(zone, neighbor, side) {
     var logPrefix = 'Zone ' + zone.id + ': ';
 
     // Ping
-    neighbor.on('ping', function (message) {
-        console.log(logPrefix + 'Ping from ' + side + ': ' + (message || ''));
+    neighbor.on('ping', function (id) {
+        console.log(logPrefix + 'ping from ' + id + ' (' + side + ')');
     });
 
     // Scopein messages
@@ -52,7 +52,7 @@ function implementJampProtocol(zone, neighbor, side) {
     });
     // Scope events
     neighbor.on('scopeEvent', function (message) {
-        zone.moduleapi.emit('elementEvent', message);
+        zone.moduleapi.emit('/element/event', message);
     });
 
     // Bookin messages
