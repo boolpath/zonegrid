@@ -57,12 +57,20 @@ function handleCrossings(zone, change) {
         ['x', 'y', 'z'].forEach(function (coordinate) {
             var jampSide = sides[coordinate],
                 jampMargin = margins[coordinate];
-            if (jampSide === 'middle') { return; }
-            console.log(sides, coordinate, jampSide);
+            if (jampSide === 'middle') { 
+                if (lastSides[coordinate] !== 'middle' && zone['scopein'][elementID][neighbor.side]) {
+                    delete zone['scopein'][elementID][neighbor.side];
+                    delete neighbor['scopein'][elementID];
+                    neighbor.emit('scopeout', {
+                        id: elementID
+                    });
+                }
+                return; 
+            }
             // If there was a margin crossing in this coordinate axis, 
             // and the neighbor receives notifications about this margin crossing,
             // and the notification about this element has not been sent already
-            if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
+            else if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
                 if (zone[jampMargin]) {
                     if(typeof zone[jampMargin][elementID] !== 'object') {
                         zone[jampMargin][elementID] = {};
