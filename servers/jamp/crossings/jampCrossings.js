@@ -84,10 +84,13 @@ function handleCrossings(zone, change) {
         } 
         // Cube faces (x6): one band different than middle
         else if (bands.x !== middle || bands.y !== middle || bands.z !== middle) {
-            for (var coordinate in notMiddle(neighborSides)) {
+            // Scopeout
+
+            // Bookin and checkin
+            for (var coordinate in notMiddleCoordinates(neighborSides)) {
                 var jampMargin = margins[coordinate];
                 if (jampMargin && zone[jampMargin] && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
-                    if(typeof zone[jampMargin][elementID] !== 'object') {
+                    if (typeof zone[jampMargin][elementID] !== 'object') {
                         zone[jampMargin][elementID] = {};
                     } else if (zone[jampMargin][elementID][neighbor.side]) {
                         continue;
@@ -101,7 +104,16 @@ function handleCrossings(zone, change) {
         }
         // Cube core (x1): all bands are equal to middle
         else {
-
+            // Scopeout
+            for (var coordinate in notMiddleCoordinates(neighborSides)) {
+                if (lastBands[coordinate] !== middle && neighborSides[coordinate] === lastBands[coordinate]) {
+                    delete zone['scopein'][elementID][neighbor.side];
+                    delete neighbor['scopein'][elementID];
+                    delete zone['bookin'][elementID][neighbor.side];
+                    delete neighbor['bookin'][elementID];
+                    sendNotification(zone, neighbor, element, 'scopeout');
+                }
+            }
         }
     }
 }
@@ -134,7 +146,17 @@ function sendNotification(zone, neighbor, element, margin) {
     neighbor.emit(event, message);
 }
 
-function notMiddle(sides) {
+function middleCoordinates(sides) {
+    var axes = {};
+    for (var coordinate in sides) {
+        if (sides[coordinate] === middle) {
+            axes[coordinate] = true;
+        }
+    }
+    return axes;
+}
+
+function notMiddleCoordinates(sides) {
     var axes = {};
     for (var coordinate in sides) {
         if (sides[coordinate] !== middle) {
