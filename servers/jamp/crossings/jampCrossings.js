@@ -64,7 +64,6 @@ function handleCrossings(zone, change) {
         var neighbor = zone.neighbors('x.' + neighborSides.x, 'y.' + neighborSides.y, 'z.' + neighborSides.z); 
         if (!neighbor || !neighbor.server) { continue; }
 
-        console.log(neighbor.side);
 
         // Cube vertices (x8): all bands different than middle
         if (bands.x !== middle && bands.y !== middle && bands.z !== middle) {
@@ -80,7 +79,7 @@ function handleCrossings(zone, change) {
         else if (bands.x !== middle && bands.y !== middle ||
                  bands.y !== middle && bands.z !== middle ||
                  bands.x !== middle && bands.z !== middle) {
-            // console.log(neighbor.side, margins)
+                
         } 
         // Cube faces (x6): one band different than middle
         else if (bands.x !== middle || bands.y !== middle || bands.z !== middle) {
@@ -99,6 +98,7 @@ function handleCrossings(zone, change) {
                     zone[jampMargin][elementID][neighbor.side] = true;
                     neighbor[jampMargin][elementID] = element;
                     sendNotification(zone, neighbor, element, jampMargin);
+                    break; // once the cube face coordinate is found, the loop can be broken
                 }
             }
         }
@@ -107,10 +107,6 @@ function handleCrossings(zone, change) {
             // Scopeout
             for (var coordinate in notMiddleCoordinates(neighborSides)) {
                 if (lastBands[coordinate] !== middle && neighborSides[coordinate] === lastBands[coordinate]) {
-                    delete zone['scopein'][elementID][neighbor.side];
-                    delete neighbor['scopein'][elementID];
-                    delete zone['bookin'][elementID][neighbor.side];
-                    delete neighbor['bookin'][elementID];
                     sendNotification(zone, neighbor, element, 'scopeout');
                 }
             }
@@ -119,8 +115,8 @@ function handleCrossings(zone, change) {
 }
 
 function sendNotification(zone, neighbor, element, margin) {
-    console.log(margin);
     var event = margin,
+        elementID = element.id,
         position = element.position || {},
         message = {
             element: {
@@ -133,14 +129,21 @@ function sendNotification(zone, neighbor, element, margin) {
             }
         };
 
-    if (margin === 'scopein') {
-        var jampAssets = zone.servers.jampAssets;
-        message.request = {
-            hostname: jampAssets.host,
-            port:     jampAssets.port,
-            path:     '/' + element.file
-        };
-        message.element.file = element.file;
+    if (margin === 'scopeout') {
+        delete zone['scopein'][elementID][neighbor.side];
+        delete neighbor['scopein'][elementID];
+        delete zone['bookin'][elementID][neighbor.side];
+        delete neighbor['bookin'][elementID];
+    } else {
+        if (margin === 'scopein') {
+            var jampAssets = zone.servers.jampAssets;
+            message.request = {
+                hostname: jampAssets.host,
+                port:     jampAssets.port,
+                path:     '/' + element.file
+            };
+            message.element.file = element.file;
+        }
     }
 
     neighbor.emit(event, message);
