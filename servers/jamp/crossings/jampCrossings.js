@@ -31,7 +31,8 @@ function handleCrossings(zone, change) {
             x: x[1],    // e.g. 'scopein'
             y: y[1],    // e.g. 'bookin'
             z: z[1]     // e.g. undefined
-        };
+        }; 
+        console.log(element.position.x, element.position.y, quadrant);
 
     x = lastQuadrant.x.split('.');  
     y = lastQuadrant.y.split('.');  
@@ -79,23 +80,32 @@ function handleCrossings(zone, change) {
         else if (bands.x !== middle && bands.y !== middle ||
                  bands.y !== middle && bands.z !== middle ||
                  bands.x !== middle && bands.z !== middle) {
-            for (var coordinate in notMiddleCoordinates(neighborSides)) {
-                if (neighborSides[coordinate] === bands[coordinate]) {
-                    // console.log(neighbor.side, coordinate, margins[coordinate], bands[coordinate]);
-                    sendNotification(zone, neighbor, element, margins[coordinate]);
+            for (var coordinate in notMiddleCoordinates(bands)) {
+                var jampMargin = margins[coordinate];
+                if (neighborSides[coordinate] === bands[coordinate] && 
+                    validMargin(zone, neighbor, elementID, jampMargin)) {
+                    sendNotification(zone, neighbor, element, jampMargin);
+                    break;
                 }
             }    
         } 
         // Cube faces (x6): one band different than middle
         else if (bands.x !== middle || bands.y !== middle || bands.z !== middle) {
             // Scopeout
-
+            for (var coordinate in notMiddleCoordinates(lastBands)) {
+                if (neighborSides[coordinate] === lastBands[coordinate] && 
+                    lastBands[coordinate] !== bands[coordinate]) {
+                    sendNotification(zone, neighbor, element, 'scopeout');
+                    break;
+                }
+            }
             // Bookin and checkin
             for (var coordinate in notMiddleCoordinates(neighborSides)) {
                 var jampMargin = margins[coordinate];
-                if (validMargin(zone, neighbor, elementID, jampMargin)) {
+                if (validMargin(zone, neighbor, elementID, jampMargin, neighborSides, bands)) { 
                     sendNotification(zone, neighbor, element, jampMargin);
-                    break; // once the cube face coordinate is found, the loop can be broken
+                    console.log(neighbor.side, jampMargin)
+                    // break; // once the cube face coordinate is found, the loop can be broken
                 }
             }
         }
@@ -111,9 +121,13 @@ function handleCrossings(zone, change) {
     }
 }
 
-function validMargin(zone, neighbor, elementID, margin) {
+function validMargin(zone, neighbor, elementID, margin, neighborSides, bands) {
     if (zone[margin] && typeof zone[margin][elementID] !== 'object') {
         zone[margin][elementID] = {};
+    }
+    if (neighborSides && bands &&
+        !(neighborSides.x === bands.x && neighborSides.y === bands.y && neighborSides.z === bands.z)) {
+        return false;
     }
     return margin && zone[margin] && neighbor[margin] && !neighbor[margin][elementID];
 }
