@@ -94,12 +94,6 @@ function handleCrossings(zone, change) {
             for (var coordinate in notMiddleCoordinates(neighborSides)) {
                 var jampMargin = margins[coordinate];
                 if (validMargin(zone, neighbor, elementID, jampMargin)) {
-                    if (typeof zone[jampMargin][elementID] !== 'object') {
-                        zone[jampMargin][elementID] = {};
-                    } else if (zone[jampMargin][elementID][neighbor.side]) {
-                        continue;
-                    } 
-
                     sendNotification(zone, neighbor, element, jampMargin);
                     break; // once the cube face coordinate is found, the loop can be broken
                 }
@@ -118,6 +112,9 @@ function handleCrossings(zone, change) {
 }
 
 function validMargin(zone, neighbor, elementID, margin) {
+    if (zone[margin] && typeof zone[margin][elementID] !== 'object') {
+        zone[margin][elementID] = {};
+    }
     return margin && zone[margin] && neighbor[margin] && !neighbor[margin][elementID];
 }
 
