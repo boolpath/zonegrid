@@ -93,7 +93,7 @@ function handleCrossings(zone, change) {
             // Bookin and checkin
             for (var coordinate in notMiddleCoordinates(neighborSides)) {
                 var jampMargin = margins[coordinate];
-                if (jampMargin && zone[jampMargin] && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
+                if (validMargin(zone, neighbor, elementID, jampMargin)) {
                     if (typeof zone[jampMargin][elementID] !== 'object') {
                         zone[jampMargin][elementID] = {};
                     } else if (zone[jampMargin][elementID][neighbor.side]) {
@@ -115,6 +115,10 @@ function handleCrossings(zone, change) {
             }
         }
     }
+}
+
+function validMargin(zone, neighbor, elementID, margin) {
+    return margin && zone[margin] && neighbor[margin] && !neighbor[margin][elementID];
 }
 
 function sendNotification(zone, neighbor, element, margin) {
