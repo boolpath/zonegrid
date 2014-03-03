@@ -1,3 +1,6 @@
+/* GLOBAL VARIABLES */
+var middle = 'middle', scopeout = 'scopeout';
+
 /** MODULE INTERFACE
  *@method {function} handle - Handles element quadrant changes and border crossings
  */
@@ -13,12 +16,13 @@ module.exports = {
  */
 function handleCrossings(zone, change) {
     var elementID = change.id,
+        element = zone.elements[elementID],
         quadrant = change.quadrant, // e.g. {x: 'lower.scopein', y: 'higher.bookin', z: 'middle'}
         lastQuadrant = change.lastQuadrant,
         x = quadrant.x.split('.'),  
         y = quadrant.y.split('.'),  
         z = quadrant.z.split('.'),
-        sides = {
+        bands = {
             x: x[0],    // e.g. 'lower'
             y: y[0],    // e.g. 'higher'
             z: z[0]     // e.g. 'middle'
@@ -32,7 +36,7 @@ function handleCrossings(zone, change) {
     x = lastQuadrant.x.split('.');  
     y = lastQuadrant.y.split('.');  
     z = lastQuadrant.z.split('.');
-    var lastSides = {
+    var lastBands = {
             x: x[0],    // e.g. 'lower'
             y: y[0],    // e.g. 'higher'
             z: z[0]     // e.g. 'middle'
@@ -44,77 +48,100 @@ function handleCrossings(zone, change) {
         };;
     
     // Figure out which neighbors should receive the quadrant change notification
-    var neighbors = getInvolvedNeighbors(sides, margins, lastSides, lastMargins);
+    var neighbors = getInvolvedNeighbors(bands, margins, lastBands, lastMargins);
 
     // Loop through all neighbors and notify the margin crossing 
     for (var index in neighbors) {
-        var neighborSides = index.split('-');
-            neighborSides = {
-                x: neighborSides[0],
-                y: neighborSides[1],
-                z: neighborSides[2]
-            };
-        var neighbor = zone.neighbors(neighborSides.x, neighborSides.y, neighborSides.z); 
+        var neighborSides = index.split('-'),
+            jampNotification;
+
+        neighborSides = {
+            x: neighborSides[0].split('.')[1],
+            y: neighborSides[1].split('.')[1],
+            z: neighborSides[2].split('.')[1]
+        };
+
+        var neighbor = zone.neighbors('x.' + neighborSides.x, 'y.' + neighborSides.y, 'z.' + neighborSides.z); 
         if (!neighbor || !neighbor.server) { continue; }
 
-        console.log(sides, margins);
-        ['x', 'y', 'z'].forEach(function (coordinate) {
-            var jampSide = sides[coordinate],
-                jampMargin = margins[coordinate];
-            if (jampSide === 'middle') { console.log(neighborSides[coordinate].split('.')[1]);
-                if (lastSides[coordinate] !== 'middle' && 
-                    zone['scopein'][elementID][neighbor.side] &&
-                    neighborSides[coordinate].split('.')[1] !== sides[coordinate]) {
-                    console.log(coordinate, jampSide, jampMargin, lastSides[coordinate])
-                    delete zone['scopein'][elementID][neighbor.side];
-                    delete neighbor['scopein'][elementID];
-                    neighbor.emit('scopeout', {
-                        id: elementID
-                    });
-                }
-                return; 
+        console.log(neighbor.side);
+
+        // Cube vertices (x8): all bands different than middle
+        if (bands.x !== middle && bands.y !== middle && bands.z !== middle) {
+            // Cube vertix neighbor (x1)
+            if (neighborSides.x === neighborSides.y &&
+                neighborSides.y === neighborSides.z &&
+                neighborSides.x === neighborSides.z) {
+                
             }
-            // If there was a margin crossing in this coordinate axis, 
-            // and the neighbor receives notifications about this margin crossing,
-            // and the notification about this element has not been sent already
-            else if (jampMargin && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
-                if (zone[jampMargin]) {
+            // 
+        }
+        // Cube borders (x12): two bands different than middle
+        else if (bands.x !== middle && bands.y !== middle ||
+                 bands.y !== middle && bands.z !== middle ||
+                 bands.x !== middle && bands.z !== middle) {
+            // console.log(neighbor.side, margins)
+        } 
+        // Cube faces (x6): one band different than middle
+        else if (bands.x !== middle || bands.y !== middle || bands.z !== middle) {
+            for (var coordinate in notMiddle(neighborSides)) {
+                var jampMargin = margins[coordinate];
+                if (jampMargin && zone[jampMargin] && neighbor[jampMargin] && !neighbor[jampMargin][elementID]) {
                     if(typeof zone[jampMargin][elementID] !== 'object') {
                         zone[jampMargin][elementID] = {};
-                    }
+                    } else if (zone[jampMargin][elementID][neighbor.side]) {
+                        continue;
+                    } 
+
                     zone[jampMargin][elementID][neighbor.side] = true;
+                    neighbor[jampMargin][elementID] = element;
+                    sendNotification(zone, neighbor, element, jampMargin);
                 }
-
-                var element = neighbor[jampMargin][elementID] = zone.elements[elementID],
-                    position = element.position,
-                    rotation = element.rotation,
-                    speed = element.speed || {},
-                    message = {
-                        element: {
-                            name: element.name,
-                            key: element.key,
-                            position: {
-                                x: position.x,
-                                y: position.y,
-                                z: position.z
-                            }
-                        }
-                    };
-
-                if (jampMargin === 'scopein') {
-                    var jampAssets = zone.servers.jampAssets;
-                    message.request = {
-                        hostname: jampAssets.host,
-                        port:     jampAssets.port,
-                        path:     '/' + element.file
-                    };
-                    message.element.file = element.file;
-                } 
-                // Send a JAMP message to the neighbor
-                neighbor.emit(jampMargin, message);
             }
-        });
+        }
+        // Cube core (x1): all bands are equal to middle
+        else {
+
+        }
     }
+}
+
+function sendNotification(zone, neighbor, element, margin) {
+    console.log(margin);
+    var event = margin,
+        position = element.position || {},
+        message = {
+            element: {
+                id: element.id,
+                position: {
+                    x: position.x,
+                    y: position.y,
+                    z: position.z
+                }
+            }
+        };
+
+    if (margin === 'scopein') {
+        var jampAssets = zone.servers.jampAssets;
+        message.request = {
+            hostname: jampAssets.host,
+            port:     jampAssets.port,
+            path:     '/' + element.file
+        };
+        message.element.file = element.file;
+    }
+
+    neighbor.emit(event, message);
+}
+
+function notMiddle(sides) {
+    var axes = {};
+    for (var coordinate in sides) {
+        if (sides[coordinate] !== middle) {
+            axes[coordinate] = true;
+        }
+    }
+    return axes;
 }
 
 /** Finds the neighbors interested in receiving the notification of a quadrant change
