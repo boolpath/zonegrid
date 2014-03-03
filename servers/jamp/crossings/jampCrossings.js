@@ -79,7 +79,12 @@ function handleCrossings(zone, change) {
         else if (bands.x !== middle && bands.y !== middle ||
                  bands.y !== middle && bands.z !== middle ||
                  bands.x !== middle && bands.z !== middle) {
-                
+            for (var coordinate in notMiddleCoordinates(neighborSides)) {
+                if (neighborSides[coordinate] === bands[coordinate]) {
+                    // console.log(neighbor.side, coordinate, margins[coordinate], bands[coordinate]);
+                    sendNotification(zone, neighbor, element, margins[coordinate]);
+                }
+            }    
         } 
         // Cube faces (x6): one band different than middle
         else if (bands.x !== middle || bands.y !== middle || bands.z !== middle) {
@@ -95,8 +100,6 @@ function handleCrossings(zone, change) {
                         continue;
                     } 
 
-                    zone[jampMargin][elementID][neighbor.side] = true;
-                    neighbor[jampMargin][elementID] = element;
                     sendNotification(zone, neighbor, element, jampMargin);
                     break; // once the cube face coordinate is found, the loop can be broken
                 }
@@ -135,6 +138,8 @@ function sendNotification(zone, neighbor, element, margin) {
         delete zone['bookin'][elementID][neighbor.side];
         delete neighbor['bookin'][elementID];
     } else {
+        zone[margin][elementID][neighbor.side] = true;
+        neighbor[margin][elementID] = element;
         if (margin === 'scopein') {
             var jampAssets = zone.servers.jampAssets;
             message.request = {
