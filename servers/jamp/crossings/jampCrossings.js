@@ -155,6 +155,15 @@ function sendNotification(zone, neighbor, element, margin) {
     } else {
         zone[margin][elementID][neighbor.side] = true;
         neighbor[margin][elementID] = element;
+        if (margin === 'bookin' && (!neighbor['scopein'][elementID] ||
+            zone['scopein'] && !zone['scopein'][elementID][neighbor.side])) {
+            event = margin = 'scopein';
+            zone['scopein'][elementID][neighbor.side] = true;
+            neighbor['scopein'][elementID] = element;
+            process.nextTick(function () {
+                sendNotification(zone, neighbor, element, 'bookin');
+            });
+        } 
         if (margin === 'scopein') {
             var jampAssets = zone.servers.jampAssets;
             message.request = {
