@@ -148,10 +148,14 @@ function sendNotification(zone, neighbor, element, margin) {
         };
 
     if (margin === 'scopeout') {
-        delete zone['scopein'][elementID][neighbor.side];
-        delete neighbor['scopein'][elementID];
-        delete zone['bookin'][elementID][neighbor.side];
-        delete neighbor['bookin'][elementID];
+        if (zone['scopein'][elementID]) {
+            delete zone['scopein'][elementID][neighbor.side];
+            delete neighbor['scopein'][elementID];
+        }
+        if (zone['bookin'][elementID]) {
+            delete zone['bookin'][elementID][neighbor.side];
+            delete neighbor['bookin'][elementID];
+        }
     } else {
         zone[margin][elementID][neighbor.side] = true;
         neighbor[margin][elementID] = element;
